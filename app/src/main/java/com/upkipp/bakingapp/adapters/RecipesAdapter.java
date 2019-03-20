@@ -1,4 +1,4 @@
-package com.upkipp.bakingapp;
+package com.upkipp.bakingapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,6 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.upkipp.bakingapp.R;
+import com.upkipp.bakingapp.models.Recipe;
+
+import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
     private Context mContext;

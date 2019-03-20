@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
+import com.upkipp.bakingapp.adapters.RecipesAdapter;
+import com.upkipp.bakingapp.models.Recipe;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecipesAdapter.OnRecipeItemClickListener {
-    RecyclerView mRecipesReclclerView;
+    RecyclerView mRecipesRecyclerView;
     RecipesAdapter mRecipesAdapter;
     List<Recipe>  mRecipeList;
 
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.On
     }
 
     private void defineViews() {
-        mRecipesReclclerView = findViewById(R.id.RecipesReclclerView);
+        mRecipesRecyclerView = findViewById(R.id.RecipesReclclerView);
     }
 
     private void getRecipes() {
