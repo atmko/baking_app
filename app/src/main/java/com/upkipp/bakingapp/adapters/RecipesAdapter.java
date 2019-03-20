@@ -65,4 +65,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         return 0;
 
     }
+
+    public List<Recipe> getRecipeList() {
+        return mRecipeList;
+    }
+
+    public void setRecipeList(List<Recipe> recipeList) {
+        this.mRecipeList = recipeList;
+        notifyDataSetChanged();
+    }
+
 }
