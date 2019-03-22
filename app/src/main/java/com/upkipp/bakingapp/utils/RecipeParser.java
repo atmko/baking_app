@@ -36,13 +36,13 @@ public class RecipeParser {
 
             List newStepsList = new ArrayList();
 
-            List stepList = (List)currentRecipeData.get(AppConstants.INGREDIENTS_KEY);
+            List stepList = (List)currentRecipeData.get(AppConstants.STEPS_KEY);
             for (int stepIndex = 0; stepIndex < stepList.size() ; stepIndex++) {
                 Map currentStep = (Map) stepList.get(stepIndex);//get current movie
 
                 currentStep.put("id",String.valueOf(currentStep.get("id")));
 
-                newIngredientList.add(currentStep);
+                newStepsList.add(currentStep);
 
 //                Log.d("Tagg", Boolean.toString(currentStep.get("quantity") instanceof String));
 

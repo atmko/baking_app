@@ -13,12 +13,10 @@ import com.upkipp.bakingapp.models.Recipe;
 import java.util.List;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
-    private Context mContext;
     private OnRecipeItemClickListener mOnRecipeItemClickListener;
     private List<Recipe> mRecipeList;
 
     public RecipesAdapter(Context context) {
-        mContext = context;
         mOnRecipeItemClickListener = (OnRecipeItemClickListener) context;
     }
 
@@ -31,7 +29,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
         private RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
-            View placeholderView = itemView.findViewById(R.id.card);
 
             itemView.setOnClickListener(this);
         }

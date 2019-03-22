@@ -1,10 +1,12 @@
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.upkipp.bakingapp.fragments.StepsFragment;
 import com.upkipp.bakingapp.models.Recipe;
 
 import org.parceler.Parcels;
@@ -21,6 +23,16 @@ public class StepsActivity extends AppCompatActivity {
 
         Recipe selectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(SELECTED_RECIPE_KEY));
 
-        Toast.makeText(this, selectedRecipe.getName(), Toast.LENGTH_SHORT).show();
+        StepsFragment stepsFragment = new StepsFragment();
+        stepsFragment.setIngredientsList(selectedRecipe.getIngredients());
+        stepsFragment.setStepsList(selectedRecipe.getSteps());
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .add(R.id.steps_container, stepsFragment)
+                .commit();
+
     }
+
 }
