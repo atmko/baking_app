@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".StepsActivity"
+        <activity android:name=".InstructionsActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
 

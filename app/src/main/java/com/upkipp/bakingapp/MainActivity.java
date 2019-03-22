@@ -4,18 +4,14 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.upkipp.bakingapp.adapters.RecipesAdapter;
 import com.upkipp.bakingapp.models.Recipe;
-import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.NetworkUtils;
 import com.upkipp.bakingapp.utils.RecipeParser;
 
@@ -82,8 +78,8 @@ public class MainActivity extends AppCompatActivity
         Recipe selectedRecipe =  mRecipesAdapter.getRecipeList().get(position);
         Parcelable parceledRecipe = Parcels.wrap(selectedRecipe);
 
-        Intent stepsIntent = new Intent(getApplicationContext(), StepsActivity.class);
-        stepsIntent.putExtra(StepsActivity.SELECTED_RECIPE_KEY, parceledRecipe);
+        Intent stepsIntent = new Intent(getApplicationContext(), InstructionsActivity.class);
+        stepsIntent.putExtra(InstructionsActivity.SELECTED_RECIPE_KEY, parceledRecipe);
 
         startActivity(stepsIntent);
     }
