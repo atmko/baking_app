@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.models.Recipe;
+import com.upkipp.bakingapp.utils.NetworkUtils;
 
 import java.util.List;
 
@@ -27,8 +30,16 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     public class RecipeViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
+        ImageView recipeImageView;
+        TextView nameTextView;
+        TextView servingsTextView;
+
         private RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            recipeImageView = itemView.findViewById(R.id.recipe_image_view);
+            nameTextView = itemView.findViewById(R.id.name_text_view);
+            servingsTextView = itemView.findViewById(R.id.servings_text_view);
 
             itemView.setOnClickListener(this);
         }
@@ -51,7 +62,19 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder recipeViewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecipeViewHolder recipeViewHolder, int position) {
+        Context context = recipeViewHolder.recipeImageView.getContext();
+        //get current MovieData
+        Recipe currentRecipe = mRecipeList.get(position);
+
+        //load image with glide
+        NetworkUtils.loadImage(
+                context,
+                currentRecipe.getImage(),
+                recipeViewHolder.recipeImageView);
+
+        recipeViewHolder.nameTextView.setText(currentRecipe.getName());
+        recipeViewHolder.servingsTextView.setText(currentRecipe.getServings());
 
     }
 

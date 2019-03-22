@@ -12,5 +12,14 @@ public class AppConstants {
     public static final String SERVINGS_KEY = "servings";
     public static final String IMAGE_KEY = "image";
 
+    //steps keys
+    public static final String STEP_ID_KEY = "id";
+    public static final String STEP_SHORT_DESCRIPTION_KEY = "shortDescription";
+    public static final String STEP_DESCRIPTION_KEY = "description";
+    public static final String STEP_VIDEO_URL_KEY = "videoURL";
+    public static final String STEP_THUMBNAIL_URL_KEY = "thumbnailURL";
+
+    //
+
 
 }

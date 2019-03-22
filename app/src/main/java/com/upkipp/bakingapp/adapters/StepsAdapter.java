@@ -6,10 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.upkipp.bakingapp.R;
-import com.upkipp.bakingapp.fragments.StepsFragment;
-import com.upkipp.bakingapp.models.Recipe;
+import com.upkipp.bakingapp.utils.AppConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -29,8 +29,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     public class StepViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
+        TextView shortDescriptionTextView;
+
         private StepViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            shortDescriptionTextView = itemView.findViewById(R.id.short_description_text_view);
 
             itemView.setOnClickListener(this);
         }
@@ -53,7 +57,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StepViewHolder stepViewHolder, int i) {
+    public void onBindViewHolder(@NonNull StepViewHolder stepViewHolder, int position) {
+
+        Map<String, String> currentStep = mStepList.get(position);
+        String shortDescription = currentStep.get(AppConstants.STEP_SHORT_DESCRIPTION_KEY);
+
+        stepViewHolder.shortDescriptionTextView.setText(shortDescription);
 
     }
 

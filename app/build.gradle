@@ -30,6 +30,10 @@ dependencies {
     //fast android networking
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //parceler
