@@ -1,17 +1,24 @@
 package com.upkipp.bakingapp.models;
 
+import org.parceler.Parcel;
+
+import java.util.List;
 import java.util.Map;
 
+@Parcel
 public class Recipe {
-    private String mId;
-    private String mName;
-    private Map<String, String> mIngredients;
-    private Map<String, String> mSteps;
-    private String mServings;
-    private String mImage;
+    String mId;
+    String mName;
+    List<Map<String, String>> mIngredients;
+    List<Map<String, String>> mSteps;
+    String mServings;
+    String mImage;
 
-    public Recipe(String id, String name, Map<String, String> ingredients,
-                  Map<String, String> steps, String servings, String image) {
+    Recipe() {
+    }
+
+    public Recipe(String id, String name, List<Map<String, String>> ingredients,
+                  List<Map<String, String>> steps, String servings, String image) {
 
         mId = id;
         mName = name;
@@ -38,19 +45,19 @@ public class Recipe {
         this.mName = mName;
     }
 
-    public Map<String, String> getIngredients() {
+    public List<Map<String, String>> getIngredients() {
         return mIngredients;
     }
 
-    public void setIngredients(Map<String, String> mIngredients) {
+    public void setIngredients(List<Map<String, String>> mIngredients) {
         this.mIngredients = mIngredients;
     }
 
-    public Map<String, String> getSteps() {
+    public List<Map<String, String>> getSteps() {
         return mSteps;
     }
 
-    public void setSteps(Map<String, String> mSteps) {
+    public void setSteps(List<Map<String, String>> mSteps) {
         this.mSteps = mSteps;
     }
 

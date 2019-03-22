@@ -17,21 +17,23 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     private OnRecipeItemClickListener mOnRecipeItemClickListener;
     private List<Recipe> mRecipeList;
 
-    public RecipesAdapter(Context context, List<Recipe> recipeList, OnRecipeItemClickListener clickListener) {
+    public RecipesAdapter(Context context) {
         mContext = context;
-        mRecipeList = recipeList;
-        mOnRecipeItemClickListener = clickListener;
+        mOnRecipeItemClickListener = (OnRecipeItemClickListener) context;
     }
 
     public interface OnRecipeItemClickListener {
         void onItemClick(int position);
     }
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RecipeViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         private RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
-            View placeholderView = itemView.findViewById(R.id.placeholer);
+            View placeholderView = itemView.findViewById(R.id.card);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -46,10 +48,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         Context context = viewGroup.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
 
-        int resourceId = R.layout.recipeLayout;
-
+        int resourceId = R.layout.layout_recipe;
         View view = layoutInflater.inflate(resourceId, viewGroup, false);
-
         return new RecipeViewHolder(view);
     }
 
