@@ -2,7 +2,6 @@ package com.upkipp.bakingapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,13 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.upkipp.bakingapp.R;
-import com.upkipp.bakingapp.adapters.RecipesAdapter;
 import com.upkipp.bakingapp.adapters.StepsAdapter;
 
 import java.util.List;
 import java.util.Map;
 
-public class StepsFragment extends Fragment implements StepsAdapter.OnStepItemClickListener{
+public class StepsFragment extends Fragment{
     Context mContext;
     StepsAdapter mStepsAdapter;
     RecyclerView mStepsRecyclerView;
@@ -27,9 +25,19 @@ public class StepsFragment extends Fragment implements StepsAdapter.OnStepItemCl
     private List<Map<String, String>> mIngredientsList;
     private List<Map<String, String>> mStepsList;
 
-
     public StepsFragment() {
 
+    }
+
+    //check that OnStepItemClickListener is implemented
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof StepsAdapter.OnStepItemClickListener)) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnStepItemClickListener");
+
+        }
     }
 
     @Nullable
@@ -51,7 +59,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.OnStepItemCl
         //configureLayoutManager returns a LayoutManager
         mStepsRecyclerView.setLayoutManager(configureLayoutManager());
 
-        mStepsAdapter = new StepsAdapter(this);
+        mStepsAdapter = new StepsAdapter(mContext);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
 
     }
@@ -74,8 +82,4 @@ public class StepsFragment extends Fragment implements StepsAdapter.OnStepItemCl
         this.mStepsList = stepsList;
     }
 
-    @Override
-    public void onItemClick(int position) {
-
-    }
 }

@@ -23,6 +23,11 @@ public class Recipe {
         mId = id;
         mName = name;
         mIngredients = ingredients;
+
+
+//        addIngredientsToSteps(ingredients);
+
+
         mSteps = steps;
         mServings = servings;
         mImage = image;

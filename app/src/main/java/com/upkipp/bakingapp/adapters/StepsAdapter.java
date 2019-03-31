@@ -18,12 +18,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     private OnStepItemClickListener mOnStepItemClickListener;
     private List<Map<String, String>> mStepList;
 
-    public StepsAdapter(OnStepItemClickListener clickListener) {
-        mOnStepItemClickListener = clickListener;
+    public StepsAdapter(Context context) {
+        mOnStepItemClickListener = (OnStepItemClickListener) context;
     }
 
     public interface OnStepItemClickListener {
-        void onItemClick(int position);
+        void onStepClick(int position);
     }
 
     public class StepViewHolder extends RecyclerView.ViewHolder
@@ -41,7 +41,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
         @Override
         public void onClick(View v) {
-            mOnStepItemClickListener.onItemClick(getAdapterPosition());
+            mOnStepItemClickListener.onStepClick(getAdapterPosition());
         }
     }
 
@@ -60,9 +60,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     public void onBindViewHolder(@NonNull StepViewHolder stepViewHolder, int position) {
 
         Map<String, String> currentStep = mStepList.get(position);
+        String id = currentStep.get(AppConstants.STEP_ID_KEY);
         String shortDescription = currentStep.get(AppConstants.STEP_SHORT_DESCRIPTION_KEY);
 
-        stepViewHolder.shortDescriptionTextView.setText(shortDescription);
+        String newShortDescription = id + ". " + shortDescription;
+
+        stepViewHolder.shortDescriptionTextView.setText(newShortDescription);
 
     }
 

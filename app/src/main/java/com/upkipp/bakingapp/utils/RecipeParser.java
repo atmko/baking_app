@@ -26,7 +26,7 @@ public class RecipeParser {
             for (int ingredientIndex = 0; ingredientIndex < ingredientList.size() ; ingredientIndex++) {
                 Map currentIngredient = (Map) ingredientList.get(ingredientIndex);//get current movie
 
-                currentIngredient.put("quantity",String.valueOf(currentIngredient.get("quantity")));
+                currentIngredient.put("quantity", String.valueOf(currentIngredient.get("quantity")));
 
                 newIngredientList.add(currentIngredient);
 
@@ -40,7 +40,9 @@ public class RecipeParser {
             for (int stepIndex = 0; stepIndex < stepList.size() ; stepIndex++) {
                 Map currentStep = (Map) stepList.get(stepIndex);//get current movie
 
-                currentStep.put("id",String.valueOf(currentStep.get("id")));
+                Double idDoubleValue = (double)currentStep.get("id");
+
+                currentStep.put("id", String.valueOf(idDoubleValue.intValue()));
 
                 newStepsList.add(currentStep);
 

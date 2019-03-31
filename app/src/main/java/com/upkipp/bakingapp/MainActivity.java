@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
@@ -21,6 +21,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements RecipesAdapter.OnRecipeItemClickListener {
+
+    public static final String SELECTED_RECIPE_KEY = "recipe";
 
     RecyclerView mRecipesRecyclerView;
     RecipesAdapter mRecipesAdapter;
@@ -73,21 +75,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void openStepsActivity(int position) {
-        //TODO: use parcelable/serializable
+    private GridLayoutManager configureLayoutManager() {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.recipe_column_span));
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        return layoutManager;
+    }
+
+    private void startStepsActivity(int position) {
         Recipe selectedRecipe =  mRecipesAdapter.getRecipeList().get(position);
         Parcelable parceledRecipe = Parcels.wrap(selectedRecipe);
 
-        Intent stepsIntent = new Intent(getApplicationContext(), InstructionsActivity.class);
-        stepsIntent.putExtra(InstructionsActivity.SELECTED_RECIPE_KEY, parceledRecipe);
+        Intent stepsAndSharedIntent = new Intent(getApplicationContext(), StepsAndSharedActivity.class);
+        stepsAndSharedIntent.putExtra(SELECTED_RECIPE_KEY, parceledRecipe);
 
-        startActivity(stepsIntent);
-    }
-
-    private LinearLayoutManager configureLayoutManager() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        return layoutManager;
+        startActivity(stepsAndSharedIntent);
     }
 
     @Override
@@ -98,8 +99,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-        openStepsActivity(position);
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        startStepsActivity(position);
     }
 
 }
