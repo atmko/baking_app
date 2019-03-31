@@ -58,6 +58,17 @@ public class Recipe {
         this.mIngredients = mIngredients;
     }
 
+    public String[] getIngredientNames() {
+        int listSize = mIngredients.size();
+
+        String[] ingredientNameList = new String[listSize];
+        for (int index = 0; index < listSize; index++) {
+            ingredientNameList[index] = mIngredients.get(index).get("ingredient");
+
+        }
+        return ingredientNameList;
+    }
+
     public List<Map<String, String>> getSteps() {
         return mSteps;
     }
