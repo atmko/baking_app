@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".DetailsActivity" />
+        <activity android:name=".DetailsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".StepsAndSharedActivity"/>
 
         <activity
             android:name=".MainActivity"

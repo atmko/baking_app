@@ -23,22 +23,30 @@ public class MainActivity extends AppCompatActivity
         implements RecipesAdapter.OnRecipeItemClickListener {
 
     public static final String SELECTED_RECIPE_KEY = "recipe";
+    private static final String RECIPE_LIST_RESTORE_KEY = "recipe_list";
 
     RecyclerView mRecipesRecyclerView;
     RecipesAdapter mRecipesAdapter;
+
+    List<Recipe> mRecipeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            defineViews();
-            getAllRecipes();
+        defineViews();
 
-        } else {
-            restoreSavedValues();
+        if (savedInstanceState != null) {
+            restoreSavedValues(savedInstanceState);
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getAllRecipes();
 
     }
 
@@ -57,9 +65,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(String responseString) {
                 //parse json string
-                List<Recipe> recipeList = RecipeParser.parseRecipes(responseString);
+                mRecipeList = RecipeParser.parseRecipes(responseString);
                 //add recipes to adapter
-                mRecipesAdapter.setRecipeList(recipeList);
+                mRecipesAdapter.setRecipeList(mRecipeList);
             }
 
             @Override
@@ -71,7 +79,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void restoreSavedValues() {
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mRecipeList = Parcels.unwrap(savedInstanceState.getParcelable(RECIPE_LIST_RESTORE_KEY));
+        mRecipesAdapter.setRecipeList(mRecipeList);
 
     }
 
@@ -94,6 +104,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        if (mRecipeList != null) {
+            outState.putParcelable(RECIPE_LIST_RESTORE_KEY, Parcels.wrap(mRecipeList));
+        }
 
     }
 
