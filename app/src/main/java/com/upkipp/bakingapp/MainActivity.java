@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mRecipeList = Parcels.unwrap(savedInstanceState.getParcelable(RECIPE_LIST_RESTORE_KEY));
+        mRecipesAdapter.setRecipeList(mRecipeList);
+    }
+
     private void getAllRecipes() {
         NetworkUtils.getAllRecipes().getAsString(new StringRequestListener() {
             @Override
@@ -79,26 +84,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void restoreSavedValues(Bundle savedInstanceState) {
-        mRecipeList = Parcels.unwrap(savedInstanceState.getParcelable(RECIPE_LIST_RESTORE_KEY));
-        mRecipesAdapter.setRecipeList(mRecipeList);
-
-    }
-
     private GridLayoutManager configureLayoutManager() {
         GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.recipe_column_span));
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         return layoutManager;
-    }
-
-    private void startStepsActivity(int position) {
-        Recipe selectedRecipe =  mRecipesAdapter.getRecipeList().get(position);
-        Parcelable parceledRecipe = Parcels.wrap(selectedRecipe);
-
-        Intent stepsAndSharedIntent = new Intent(getApplicationContext(), StepsAndSharedActivity.class);
-        stepsAndSharedIntent.putExtra(SELECTED_RECIPE_KEY, parceledRecipe);
-
-        startActivity(stepsAndSharedIntent);
     }
 
     @Override
@@ -114,6 +103,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemClick(int position) {
         startStepsActivity(position);
+    }
+
+    private void startStepsActivity(int position) {
+        Recipe selectedRecipe =  mRecipesAdapter.getRecipeList().get(position);
+        Parcelable parceledRecipe = Parcels.wrap(selectedRecipe);
+
+        Intent stepsAndSharedIntent = new Intent(getApplicationContext(), StepsAndSharedActivity.class);
+        stepsAndSharedIntent.putExtra(SELECTED_RECIPE_KEY, parceledRecipe);
+
+        startActivity(stepsAndSharedIntent);
     }
 
 }

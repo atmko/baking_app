@@ -20,6 +20,8 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     public static final String STEPS_KEY = "steps";
     public static final String POSITION_KEY = "details";
 
+    private static final String SELECTED_RECIPE_RESTORE_KEY = "selected_recipe";
+
     private Recipe mSelectedRecipe;
     private boolean mIsTwoPane;
 
@@ -28,7 +30,13 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_and_shared);
 
-        defineSelectedRecipe();
+        if (savedInstanceState == null) {
+            defineSelectedRecipe();
+
+        } else {
+            restoreSavedValues(savedInstanceState);
+        }
+
         loadStepsFragment();
         defineIsTwoPane();
 
@@ -43,6 +51,11 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         mSelectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(MainActivity.SELECTED_RECIPE_KEY));
     }
 
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mSelectedRecipe =
+                Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_RESTORE_KEY));
+    }
+
     private void loadStepsFragment() {
         StepsFragment stepsFragment = new StepsFragment();
         stepsFragment.setIngredientsList(mSelectedRecipe.getIngredients());
@@ -55,6 +68,15 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
 
     private void defineIsTwoPane() {
         mIsTwoPane = (findViewById(R.id.details_container) != null);
+    }
+
+    @Override
+    public void onStepClick(int position) {
+        if (mIsTwoPane) {
+            updateDetailsFragment(position);
+        } else {
+            startDetailsActivity(position);
+        }
     }
 
     private void updateDetailsFragment(int position) {
@@ -85,16 +107,10 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     }
 
     @Override
-    public void onStepClick(int position) {
-        if (mIsTwoPane) {
-            updateDetailsFragment(position);
-        } else {
-            startDetailsActivity(position);
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        outState.putParcelable(SELECTED_RECIPE_RESTORE_KEY, Parcels.wrap(mSelectedRecipe));
     }
+
 }
