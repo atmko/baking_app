@@ -15,6 +15,9 @@ import java.util.Map;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    public static final String STEPS_KEY = "steps";
+    public static final String POSITION_KEY = "position";
+
     private List<Map<String, String>> mSteps;
     private int mPosition;
 
@@ -23,26 +26,30 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        if (getIntent() != null
-                && getIntent().hasExtra(StepsAndSharedActivity.STEPS_KEY)
-                && getIntent().hasExtra(StepsAndSharedActivity.POSITION_KEY)) {
+        if (savedInstanceState == null) {
+            if (getIntent() != null
+                    && getIntent().hasExtra(STEPS_KEY)
+                    && getIntent().hasExtra(POSITION_KEY)) {
 
-            defineSteps();
-            defineSelectedPosition();
-
-            loadDetailsFragment();
-
+                defineStepsAndPosition();
+            }
+        } else {
+            restoreSavedValues(savedInstanceState);
         }
+
+        loadDetailsFragment();
     }
 
-    private void defineSteps() {
+    private void defineStepsAndPosition() {
         Intent receivedIntent = getIntent();
-        mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(StepsAndSharedActivity.STEPS_KEY));
+        mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
+        mPosition = receivedIntent.getIntExtra(POSITION_KEY, 0);
     }
 
-    private void defineSelectedPosition() {
-        Intent receivedIntent = getIntent();
-        mPosition = receivedIntent.getIntExtra(StepsAndSharedActivity.POSITION_KEY, 0);
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mSteps =
+                Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
+        mPosition = savedInstanceState.getInt(POSITION_KEY);
     }
 
     private void loadDetailsFragment() {
@@ -72,6 +79,14 @@ public class DetailsActivity extends AppCompatActivity {
             mPosition -= 1;
             loadDetailsFragment();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(STEPS_KEY, Parcels.wrap(mSteps));
+        outState.putInt(POSITION_KEY, mPosition);
 
     }
 

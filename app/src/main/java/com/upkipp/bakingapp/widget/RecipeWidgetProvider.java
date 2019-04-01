@@ -110,7 +110,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
         //set open recipe pending intent
         Intent activityIntent =  new Intent(context, StepsAndSharedActivity.class);
-        activityIntent.putExtra(MainActivity.SELECTED_RECIPE_KEY, Parcels.wrap(recipe));
+        activityIntent.putExtra(StepsAndSharedActivity.SELECTED_RECIPE_KEY, Parcels.wrap(recipe));
 
         PendingIntent activityPendingIntent = PendingIntent
                 .getActivity(context, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);

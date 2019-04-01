@@ -22,9 +22,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements RecipesAdapter.OnRecipeItemClickListener {
 
-    public static final String SELECTED_RECIPE_KEY = "recipe";
-    private static final String RECIPE_LIST_RESTORE_KEY = "recipe_list";
-
     RecyclerView mRecipesRecyclerView;
     RecipesAdapter mRecipesAdapter;
 
@@ -47,7 +44,6 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         getAllRecipes();
-
     }
 
     private void defineViews() {
@@ -60,8 +56,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private GridLayoutManager configureLayoutManager() {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.recipe_column_span));
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        return layoutManager;
+    }
+
     private void restoreSavedValues(Bundle savedInstanceState) {
-        mRecipeList = Parcels.unwrap(savedInstanceState.getParcelable(RECIPE_LIST_RESTORE_KEY));
+        mRecipeList = Parcels.unwrap(savedInstanceState.getParcelable(StepsAndSharedActivity.SELECTED_RECIPE_KEY));
         mRecipesAdapter.setRecipeList(mRecipeList);
     }
 
@@ -84,22 +86,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private GridLayoutManager configureLayoutManager() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.recipe_column_span));
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        return layoutManager;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if (mRecipeList != null) {
-            outState.putParcelable(RECIPE_LIST_RESTORE_KEY, Parcels.wrap(mRecipeList));
-        }
-
-    }
-
     @Override
     public void onItemClick(int position) {
         startStepsActivity(position);
@@ -110,9 +96,19 @@ public class MainActivity extends AppCompatActivity
         Parcelable parceledRecipe = Parcels.wrap(selectedRecipe);
 
         Intent stepsAndSharedIntent = new Intent(getApplicationContext(), StepsAndSharedActivity.class);
-        stepsAndSharedIntent.putExtra(SELECTED_RECIPE_KEY, parceledRecipe);
+        stepsAndSharedIntent.putExtra(StepsAndSharedActivity.SELECTED_RECIPE_KEY, parceledRecipe);
 
         startActivity(stepsAndSharedIntent);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mRecipeList != null) {
+            outState.putParcelable(
+                    StepsAndSharedActivity.SELECTED_RECIPE_KEY, Parcels.wrap(mRecipeList));
+        }
+
+    }
 }

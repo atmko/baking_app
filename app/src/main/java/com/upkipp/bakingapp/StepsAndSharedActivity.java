@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 public class StepsAndSharedActivity extends AppCompatActivity implements StepsAdapter.OnStepItemClickListener{
-    public static final String STEPS_KEY = "steps";
-    public static final String POSITION_KEY = "details";
 
-    private static final String SELECTED_RECIPE_RESTORE_KEY = "selected_recipe";
+    public static final String SELECTED_RECIPE_KEY = "recipe";
 
     private Recipe mSelectedRecipe;
     private boolean mIsTwoPane;
@@ -48,12 +46,12 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
 
     private void defineSelectedRecipe() {
         Intent receivedIntent = getIntent();
-        mSelectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(MainActivity.SELECTED_RECIPE_KEY));
+        mSelectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(SELECTED_RECIPE_KEY));
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
         mSelectedRecipe =
-                Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_RESTORE_KEY));
+                Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_KEY));
     }
 
     private void loadStepsFragment() {
@@ -100,8 +98,8 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         Parcelable parceledSteps = Parcels.wrap(steps);
 
         Intent detailsIntent = new Intent(getApplicationContext(), DetailsActivity.class);
-        detailsIntent.putExtra(STEPS_KEY, parceledSteps);
-        detailsIntent.putExtra(POSITION_KEY, position);
+        detailsIntent.putExtra(DetailsActivity.STEPS_KEY, parceledSteps);
+        detailsIntent.putExtra(DetailsActivity.POSITION_KEY, position);
 
         startActivity(detailsIntent);
     }
@@ -110,7 +108,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(SELECTED_RECIPE_RESTORE_KEY, Parcels.wrap(mSelectedRecipe));
+        outState.putParcelable(SELECTED_RECIPE_KEY, Parcels.wrap(mSelectedRecipe));
     }
 
 }
