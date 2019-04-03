@@ -8,11 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -26,101 +25,59 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.upkipp.bakingapp.R;
-import com.upkipp.bakingapp.utils.NetworkUtils;
 
-public class DetailsFragment extends Fragment{
-    Context mContext;
-    TextView mDescriptionTextView;
-    SimpleExoPlayerView mVideoPlayerView;
-    ImageView mThumbnailImageView;
-
-    private String mDescription;
-    private String mIngredients;
+public class VideoPlayerFragment extends Fragment {
+    private Context mContext;
+    private SimpleExoPlayerView mVideoPlayerView;
     private String mVideoUrl;
-    private String mThumbnailUrl;
-
     private SimpleExoPlayer mVideoPlayer;
-
-    public DetailsFragment() {
-
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("..........12345", Boolean.toString(mVideoUrl==null));
 
-        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
+
+        Log.d("..........23456", Boolean.toString(mVideoUrl==null));
 
         defineViews(rootView);
 
+        Log.d("..........34567", Boolean.toString(mVideoUrl==null));
+
         setViewValues();
+
+        Log.d("..........45678", Boolean.toString(mVideoUrl==null));
 
         return rootView;
     }
 
-    public void setIngredients(String ingredients) {
-        this.mIngredients = ingredients;
-    }
+    public String getVideoUrl() {
+        return mVideoUrl;
 
-    public void setDescription(String description) {
-        this.mDescription = description;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.mThumbnailUrl = thumbnailUrl;
     }
 
     public void setVideoUrl(String videoUrl) {
+        Log.d("..........SETTING", videoUrl);
+
         this.mVideoUrl = videoUrl;
+        Log.d("..........SET", mVideoUrl);
+
     }
 
     private void defineViews(View rootView) {
         mContext = rootView.getContext();
-
-        mDescriptionTextView = rootView.findViewById(R.id.description_text_view);
-        if (mDescription == null || mDescription.equals("")) {
-            mDescriptionTextView.setVisibility(View.GONE);
-        }
-
         mVideoPlayerView = rootView.findViewById(R.id.video_player_view);
-        if (mVideoUrl == null || mVideoUrl.equals("")) {
-            mVideoPlayerView.setVisibility(View.GONE);
-        }
-
-        mThumbnailImageView = rootView.findViewById(R.id.thumbnail_image_view);
-        if (mThumbnailUrl == null || mThumbnailUrl.equals("")) {
-            mThumbnailImageView.setVisibility(View.GONE);
-        }
-
     }
 
     private void setViewValues() {
-        if (mDescription != null && !mDescription.equals("")) {
-            mDescriptionTextView.setText(mDescription);
-        }
-
-        if (mVideoUrl != null && !mVideoUrl.equals("")) {
-            configureVideoView();
-        }
-
-        if (mThumbnailUrl != null && !mThumbnailUrl.equals("")) {
-            loadThumbnail();
-        }
-    }
-
-    private void loadThumbnail() {
-        //load image with glide
-        NetworkUtils.loadImage(
-                mContext,
-                mThumbnailUrl,
-                mThumbnailImageView);
+        configureVideoView();
     }
 
     private void configureVideoView() {
         setVideoPlayerDefaultArtWork();
         createVideoPlayer();
         setVideoMediaSource();
-        createVideoPlayer();
     }
 
     private void setVideoPlayerDefaultArtWork() {
@@ -140,16 +97,21 @@ public class DetailsFragment extends Fragment{
     }
 
     private void setVideoMediaSource() {
+        Log.d("..........QWERTY", Boolean.toString(mVideoUrl==null));
         DataSource.Factory dataSourceFactory =
                 new DefaultDataSourceFactory(mContext, mContext.getString(R.string.app_name));
 
-        Uri uri = Uri.parse(mVideoUrl);
+        //temporary bug fix: fragment is called twice,
+        //mVideoUrl is sometimes null even after checking for null in activity
+        if (mVideoUrl != null) {
+            Uri uri = Uri.parse(mVideoUrl);
+            ExtractorMediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory,
+                    new DefaultExtractorsFactory(), null, null);
 
-        ExtractorMediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory,
-                new DefaultExtractorsFactory(), null, null);
+            mVideoPlayerView.setPlayer(mVideoPlayer);
+            mVideoPlayer.prepare(mediaSource);
+        }
 
-        mVideoPlayerView.setPlayer(mVideoPlayer);
-        mVideoPlayer.prepare(mediaSource);
     }
 
     private void releaseVideoPlayer() {
