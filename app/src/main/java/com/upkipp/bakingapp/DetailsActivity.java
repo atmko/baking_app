@@ -95,7 +95,7 @@ public class DetailsActivity extends AppCompatActivity {
             DescriptionFragment descriptionFragment = new DescriptionFragment();
             descriptionFragment.setDescription(description);
             showContainer(R.id.description_container);
-            replaceFragment(R.id.description_container, descriptionFragment);
+            replaceFragment(R.id.description_container, descriptionFragment, DESCRIPTION_FRAGMENT_TAG);
         }
     }
 
@@ -111,7 +111,7 @@ public class DetailsActivity extends AppCompatActivity {
             ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
             thumbnailFragment.setThumbnailUrl(thumbnailUrl);
             showContainer(R.id.thumbnail_container);
-            replaceFragment(R.id.thumbnail_container, thumbnailFragment);
+            replaceFragment(R.id.thumbnail_container, thumbnailFragment, THUMBNAIL_FRAGMENT_TAG);
         }
     }
 
@@ -127,7 +127,7 @@ public class DetailsActivity extends AppCompatActivity {
             VideoPlayerFragment videoFragment = new VideoPlayerFragment();
             videoFragment.setVideoUrl(videoUrl);
             showContainer(mVideoContainerId);
-            replaceFragment(mVideoContainerId, videoFragment);
+            replaceFragment(mVideoContainerId, videoFragment, VIDEO_FRAGMENT_TAG);
 
             if (mIsPhoneLandscape) {
                 hideOtherUiElements();
@@ -153,9 +153,9 @@ public class DetailsActivity extends AppCompatActivity {
         findViewById(viewId).setVisibility(View.VISIBLE);
     }
 
-    private void replaceFragment(int containerId, Fragment fragment) {
+    private void replaceFragment(int containerId, Fragment fragment, String fragmentTag) {
         getSupportFragmentManager().beginTransaction()
-                .replace(containerId, fragment)
+                .replace(containerId, fragment, fragmentTag)
                 .commit();
     }
 
