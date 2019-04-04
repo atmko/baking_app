@@ -46,6 +46,8 @@ public class StepsFragment extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
 
+        mContext = rootView.getContext();
+
         defineViews(rootView);
 
         setAdapterData();
@@ -54,7 +56,6 @@ public class StepsFragment extends Fragment{
     }
 
     private void defineViews(View rootView) {
-        mContext = rootView.getContext();
         mStepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
         //configureLayoutManager returns a LayoutManager
         mStepsRecyclerView.setLayoutManager(configureLayoutManager());

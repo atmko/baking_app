@@ -30,6 +30,8 @@ public class ThumbnailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_thumbnail, container, false);
 
+        mContext = rootView.getContext();
+
         defineViews(rootView);
 
         setViewValues();
@@ -42,7 +44,6 @@ public class ThumbnailFragment extends Fragment {
     }
 
     private void defineViews(View rootView) {
-        mContext = rootView.getContext();
         mThumbnailImageView = rootView.findViewById(R.id.thumbnail_image_view);
     }
 

@@ -28,6 +28,8 @@ public class DescriptionFragment extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_description, container, false);
 
+        mContext = rootView.getContext();
+
         defineViews(rootView);
 
         setViewValues();
@@ -44,7 +46,6 @@ public class DescriptionFragment extends Fragment{
     }
 
     private void defineViews(View rootView) {
-        mContext = rootView.getContext();
         mDescriptionTextView = rootView.findViewById(R.id.description_text_view);
     }
 
