@@ -5,9 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import com.upkipp.bakingapp.fragments.DescriptionFragment;
 import com.upkipp.bakingapp.fragments.ThumbnailFragment;
@@ -123,6 +120,11 @@ public class DetailsActivity extends AppCompatActivity {
             hideContainer(mVideoContainerId);
             removeFragment(VIDEO_FRAGMENT_TAG);
 
+            if (mIsPhoneLandscape) {
+                //hide regular sized video container also
+                hideContainer(R.id.video_container);
+            }
+
         } else {
             VideoPlayerFragment videoFragment = new VideoPlayerFragment();
             videoFragment.setVideoUrl(videoUrl);
@@ -130,8 +132,7 @@ public class DetailsActivity extends AppCompatActivity {
             replaceFragment(mVideoContainerId, videoFragment, VIDEO_FRAGMENT_TAG);
 
             if (mIsPhoneLandscape) {
-                hideOtherUiElements();
-                makeVideoFullScreen();
+                hideUiForFullscreen();
             }
         }
     }
@@ -159,21 +160,12 @@ public class DetailsActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void hideOtherUiElements() {
+    private void hideUiForFullscreen() {
         findViewById(R.id.details_scroll_view).setVisibility(View.GONE);
         findViewById(R.id.previous_step_button).setVisibility(View.GONE);
         findViewById(R.id.next_step_button).setVisibility(View.GONE);
 
         getSupportActionBar().hide();
-    }
-
-    private void makeVideoFullScreen() {
-        FrameLayout videoContainer = findViewById(mVideoContainerId);
-        ViewGroup.LayoutParams layoutParams = findViewById(mVideoContainerId).getLayoutParams();
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        videoContainer.setLayoutParams(layoutParams);
     }
 
     public void getNextStep(View view) {
