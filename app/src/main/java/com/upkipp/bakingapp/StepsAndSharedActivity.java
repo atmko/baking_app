@@ -43,9 +43,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         defineIsTwoPane();
 
         if (mIsTwoPane) {
-            updateDescriptionFragment(0);
-            updateVideoFragment(0);
-            updateThumbnailFragment(0);
+            loadFragments(0);
         }
 
     }
@@ -74,8 +72,13 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         mIsTwoPane = (findViewById(R.id.master_detail_flow_divider) != null);
     }
 
+    private void loadFragments(int position) {
+        updateDescriptionFragment(position);
+        updateThumbnailFragment(position);
+        updateVideoFragment(position);
+    }
+
     private void updateDescriptionFragment(int position) {
-        DescriptionFragment descriptionFragment = new DescriptionFragment();
         Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
         String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
 
@@ -84,17 +87,14 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
             removeFragment(DetailsActivity.DESCRIPTION_FRAGMENT_TAG);
 
         } else {
-            showContainer(R.id.description_container);
+            DescriptionFragment descriptionFragment = new DescriptionFragment();
             descriptionFragment.setDescription(description);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.description_container, descriptionFragment)
-                    .commit();
+            showContainer(R.id.description_container);
+            replaceFragment(R.id.description_container, descriptionFragment);
         }
     }
 
     private void updateVideoFragment(int position) {
-        VideoPlayerFragment videoFragment = new VideoPlayerFragment();
         Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
         String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
 
@@ -103,17 +103,14 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
             removeFragment(DetailsActivity.VIDEO_FRAGMENT_TAG);
 
         } else {
-            showContainer(R.id.video_container);
+            VideoPlayerFragment videoFragment = new VideoPlayerFragment();
             videoFragment.setVideoUrl(videoUrl);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.video_container, videoFragment)
-                    .commit();
+            showContainer(R.id.video_container);
+            replaceFragment(R.id.video_container, videoFragment);
         }
     }
 
     private void updateThumbnailFragment(int position) {
-        ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
         Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
         String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
 
@@ -122,12 +119,10 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
             removeFragment(DetailsActivity.THUMBNAIL_FRAGMENT_TAG);
 
         } else {
-            showContainer(R.id.thumbnail_container);
+            ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
             thumbnailFragment.setThumbnailUrl(thumbnailUrl);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.thumbnail_container, thumbnailFragment)
-                    .commit();
+            showContainer(R.id.thumbnail_container);
+            replaceFragment(R.id.thumbnail_container, thumbnailFragment);
         }
     }
 
@@ -145,6 +140,13 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         }
     }
 
+    //TODO consider making fragment utils class to avoid repeat code in DetailsActivity
+    private void replaceFragment(int containerId, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(containerId, fragment)
+                .commit();
+    }
+
     private void showContainer(int viewId) {
         findViewById(viewId).setVisibility(View.VISIBLE);
     }
@@ -152,9 +154,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     @Override
     public void onStepClick(int position) {
         if (mIsTwoPane) {
-            updateDescriptionFragment(position);
-            updateVideoFragment(position);
-            updateThumbnailFragment(position);
+            loadFragments(position);
         } else {
             startDetailsActivity(position);
         }
