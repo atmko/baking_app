@@ -2,4 +2,14 @@
     <string name="app_name">Baking App</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <!--view strings-->
+    <string name="ingredients_text" translatable="true">Ingredients</string>
+
+    <string name="next_button_text" translatable="true">next</string>
+    <string name="back_button_text" translatable="true">back</string>
+
+    <!--content descriptions-->
+    <string name="content_description_step_demonstration_image" translatable="true">demonstration image</string>
+
 </resources>

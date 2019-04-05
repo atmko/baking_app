@@ -162,7 +162,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void hideUiForFullscreen() {
         findViewById(R.id.details_scroll_view).setVisibility(View.GONE);
-        findViewById(R.id.previous_step_button).setVisibility(View.GONE);
+        findViewById(R.id.back_step_button).setVisibility(View.GONE);
         findViewById(R.id.next_step_button).setVisibility(View.GONE);
 
         getSupportActionBar().hide();

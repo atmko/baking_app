@@ -3,21 +3,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_margin="16dp">
+        style="@style/step_item_card_spacing">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_gravity="center"
-            android:text="Ingredients"
-            android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/short_description_text_view"
+        android:layout_gravity="center"
+        style="@style/step_item_text"
+        android:text="@string/ingredients_text" />
 
     </android.support.v7.widget.CardView>
 

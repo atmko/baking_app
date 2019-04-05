@@ -13,4 +13,23 @@
 
     </style>
 
+    <style name="step_item_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/triple_layout_margin</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="step_item_card_spacing">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/double_layout_margin</item>
+        <item name="android:layout_marginBottom">@dimen/double_layout_margin</item>
+        <item name="android:layout_marginLeft">@dimen/standard_layout_margin</item>
+        <item name="android:layout_marginStart">@dimen/standard_layout_margin</item>
+        <item name="android:layout_marginRight">@dimen/standard_layout_margin</item>
+        <item name="android:layout_marginEnd">@dimen/standard_layout_margin</item>
+    </style>
+
 </resources>
