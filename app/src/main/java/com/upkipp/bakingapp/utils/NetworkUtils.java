@@ -8,6 +8,7 @@ import com.androidnetworking.common.ANRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.models.Recipe;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class NetworkUtils {
         //configure glide behaviour
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(android.R.drawable.ic_menu_gallery)
-                .error(android.R.drawable.ic_dialog_alert);
+                .error(R.drawable.widget_icon);
 
         Glide.with(context)
                 .load(urlString)

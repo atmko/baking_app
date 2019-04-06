@@ -24,16 +24,18 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <include layout="@layout/containers_video_and_thumbnail" />
+        <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
 
     </LinearLayout>
+
+    <FrameLayout
+        style="@style/divider_line_vertical"/>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_margin="@dimen/standard_layout_margin">
+        android:layout_weight="1">
 
         <ScrollView
             android:id="@+id/details_scroll_view"
@@ -42,7 +44,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/back_step_button">
 
-            <include layout="@layout/layout_description" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/container_description" />
+
+            </LinearLayout>
 
         </ScrollView>
 

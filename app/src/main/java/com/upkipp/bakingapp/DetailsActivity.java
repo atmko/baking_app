@@ -75,69 +75,79 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void loadFragments() {
-        loadDescriptionFragment();
-        loadThumbnailFragment();
-        loadVideoFragment();
-    }
-
-    private void loadDescriptionFragment() {
         Map<String, String> selectedStep = mSteps.get(mPosition);
         String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
+        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
 
-        if (description == null || description.equals("")) {
-            hideContainer(R.id.description_container);
+        boolean noDescription = description == null || description.equals("");
+        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
+        boolean noVideo = videoUrl == null || videoUrl.equals("");
+
+        if (noDescription) {
+            removeView(R.id.description_container);
             removeFragment(DESCRIPTION_FRAGMENT_TAG);
 
-        } else {
-            DescriptionFragment descriptionFragment = new DescriptionFragment();
-            descriptionFragment.setDescription(description);
-            showContainer(R.id.description_container);
-            replaceFragment(R.id.description_container, descriptionFragment, DESCRIPTION_FRAGMENT_TAG);
+        }else {
+            loadDescriptionFragment(description);
         }
-    }
 
-    private void loadThumbnailFragment() {
-        Map<String, String> selectedStep = mSteps.get(mPosition);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-
-        if (thumbnailUrl == null || thumbnailUrl.equals("")) {
-            hideContainer(R.id.thumbnail_container);
+        if (noThumbnail) {
+            removeView(R.id.thumbnail_container);
             removeFragment(THUMBNAIL_FRAGMENT_TAG);
 
         } else {
-            ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
-            thumbnailFragment.setThumbnailUrl(thumbnailUrl);
-            showContainer(R.id.thumbnail_container);
-            replaceFragment(R.id.thumbnail_container, thumbnailFragment, THUMBNAIL_FRAGMENT_TAG);
+            loadThumbnailFragment(thumbnailUrl);
         }
-    }
 
-    private void loadVideoFragment() {
-        Map<String, String> selectedStep = mSteps.get(mPosition);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
-
-        if (videoUrl == null || videoUrl.equals("")) {
-            hideContainer(mVideoContainerId);
+        if (noVideo) {
+            removeView(mVideoContainerId);
             removeFragment(VIDEO_FRAGMENT_TAG);
 
             if (mIsPhoneLandscape) {
                 //hide regular sized video container also
-                hideContainer(R.id.video_container);
+                removeView(R.id.video_container);
             }
 
         } else {
-            VideoPlayerFragment videoFragment = new VideoPlayerFragment();
-            videoFragment.setVideoUrl(videoUrl);
-            showContainer(mVideoContainerId);
-            replaceFragment(mVideoContainerId, videoFragment, VIDEO_FRAGMENT_TAG);
+            loadVideoFragment(videoUrl);
+        }
 
-            if (mIsPhoneLandscape) {
-                hideUiForFullscreen();
-            }
+        if (noThumbnail && noVideo) {
+            showView(R.id.placeholder_container);
+
+        } else {
+            removeView(R.id.placeholder_container);
         }
     }
 
-    private void hideContainer(int viewId) {
+    private void loadDescriptionFragment(String description) {
+        DescriptionFragment descriptionFragment = new DescriptionFragment();
+        descriptionFragment.setDescription(description);
+        showView(R.id.description_container);
+        replaceFragment(R.id.description_container, descriptionFragment, DESCRIPTION_FRAGMENT_TAG);
+
+    }
+
+    private void loadThumbnailFragment(String thumbnailUrl) {
+        ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
+        thumbnailFragment.setThumbnailUrl(thumbnailUrl);
+        showView(R.id.thumbnail_container);
+        replaceFragment(R.id.thumbnail_container, thumbnailFragment, THUMBNAIL_FRAGMENT_TAG);
+    }
+
+    private void loadVideoFragment(String videoUrl) {
+        VideoPlayerFragment videoFragment = new VideoPlayerFragment();
+        videoFragment.setVideoUrl(videoUrl);
+        showView(mVideoContainerId);
+        replaceFragment(mVideoContainerId, videoFragment, VIDEO_FRAGMENT_TAG);
+
+        if (mIsPhoneLandscape) {
+            hideUiForFullscreen();
+        }
+    }
+
+    private void removeView(int viewId) {
         findViewById(viewId).setVisibility(View.GONE);
     }
 
@@ -150,7 +160,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void showContainer(int viewId) {
+    private void showView(int viewId) {
         findViewById(viewId).setVisibility(View.VISIBLE);
     }
 

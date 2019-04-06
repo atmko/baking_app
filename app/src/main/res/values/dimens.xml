@@ -13,6 +13,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="double_view_padding">16dp</dimen>
 
-    <dimen name="fragment_container_height">200dp</dimen>
+    <dimen name="fragment_container_height">184.5dp</dimen>
+
+    <dimen name="divider_thickness">2dp</dimen>
+    <dimen name="divider__tip_margin">24dp</dimen>
 
 </resources>

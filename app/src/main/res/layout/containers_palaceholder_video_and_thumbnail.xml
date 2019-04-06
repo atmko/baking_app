@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_details">
+
+    <ImageView
+        android:id="@+id/placeholder_container"
+        style="@style/container_style"
+        android:src="@drawable/widget_icon"
+        android:contentDescription="@string/content_description_placeholder_image"
+        tools:background="@color/colorAccent"/>
+
+    <FrameLayout
+        android:id="@+id/video_container"
+        style="@style/container_style"
+        android:background="@color/cardview_shadow_start_color"/>
+
+    <FrameLayout
+        android:id="@+id/thumbnail_container"
+        style="@style/container_style"
+        android:background="@android:color/black" />
+
+</merge>

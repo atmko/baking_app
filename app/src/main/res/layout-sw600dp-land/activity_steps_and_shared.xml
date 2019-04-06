@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    tools:context=".StepsAndSharedActivity">
+    android:orientation="horizontal">
 
     <FrameLayout
-        android:id="@+id/steps_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_margin="@dimen/standard_layout_margin"
-        tools:background="@color/wicked_orange"/>
+        android:layout_weight="1">
+
+        <include layout="@layout/container_steps" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/master_detail_flow_divider"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent"/>
+        style="@style/divider_line_vertical"/>
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_layout_margin"
         android:layout_weight="2">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_layout_margin"
             android:orientation="vertical">
 
-            <include layout="@layout/containers_video_and_thumbnail" />
+            <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
 
-            <include layout="@layout/layout_description" />
+            <include layout="@layout/container_description" />
 
         </LinearLayout>
 

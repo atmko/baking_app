@@ -18,9 +18,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/containers_video_and_thumbnail" />
+            <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
 
-            <include layout="@layout/layout_description" />
+            <FrameLayout
+                style="@style/divider_line_horizontal"/>
+
+            <include layout="@layout/container_description" />
 
         </LinearLayout>
 

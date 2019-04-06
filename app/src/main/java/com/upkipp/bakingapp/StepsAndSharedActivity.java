@@ -73,60 +73,69 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     }
 
     private void loadFragments(int position) {
-        updateDescriptionFragment(position);
-        updateThumbnailFragment(position);
-        updateVideoFragment(position);
-    }
-
-    private void updateDescriptionFragment(int position) {
         Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
         String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
 
-        if (description == null || description.equals("")) {
-            hideContainer(R.id.description_container);
+        boolean noDescription = description == null || description.equals("");
+        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
+        boolean noVideo = videoUrl == null || videoUrl.equals("");
+
+        if (noDescription) {
+            removeView(R.id.description_container);
             removeFragment(DetailsActivity.DESCRIPTION_FRAGMENT_TAG);
 
         } else {
-            DescriptionFragment descriptionFragment = new DescriptionFragment();
-            descriptionFragment.setDescription(description);
-            showContainer(R.id.description_container);
-            replaceFragment(R.id.description_container, descriptionFragment);
+            updateDescriptionFragment(description);
         }
-    }
 
-    private void updateVideoFragment(int position) {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
-
-        if (videoUrl == null || videoUrl.equals("")) {
-            hideContainer(R.id.video_container);
+        if (noVideo) {
+            removeView(R.id.video_container);
             removeFragment(DetailsActivity.VIDEO_FRAGMENT_TAG);
 
         } else {
-            VideoPlayerFragment videoFragment = new VideoPlayerFragment();
-            videoFragment.setVideoUrl(videoUrl);
-            showContainer(R.id.video_container);
-            replaceFragment(R.id.video_container, videoFragment);
+            updateThumbnailFragment(videoUrl);
         }
-    }
 
-    private void updateThumbnailFragment(int position) {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-
-        if (thumbnailUrl == null || thumbnailUrl.equals("")) {
-            hideContainer(R.id.thumbnail_container);
+        if (noThumbnail) {
+            removeView(R.id.thumbnail_container);
             removeFragment(DetailsActivity.THUMBNAIL_FRAGMENT_TAG);
 
         } else {
-            ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
-            thumbnailFragment.setThumbnailUrl(thumbnailUrl);
-            showContainer(R.id.thumbnail_container);
-            replaceFragment(R.id.thumbnail_container, thumbnailFragment);
+            updateVideoFragment(thumbnailUrl);
+        }
+
+        if (noThumbnail && noVideo) {
+            showView(R.id.placeholder_container);
+
+        } else {
+            removeView(R.id.placeholder_container);
         }
     }
 
-    private void hideContainer(int viewId) {
+    private void updateDescriptionFragment(String description) {
+        DescriptionFragment descriptionFragment = new DescriptionFragment();
+        descriptionFragment.setDescription(description);
+        showView(R.id.description_container);
+        replaceFragment(R.id.description_container, descriptionFragment);
+    }
+
+    private void updateVideoFragment(String videoUrl) {
+        VideoPlayerFragment videoFragment = new VideoPlayerFragment();
+        videoFragment.setVideoUrl(videoUrl);
+        showView(R.id.video_container);
+        replaceFragment(R.id.video_container, videoFragment);
+    }
+
+    private void updateThumbnailFragment(String thumbnailUrl) {
+        ThumbnailFragment thumbnailFragment = new ThumbnailFragment();
+        thumbnailFragment.setThumbnailUrl(thumbnailUrl);
+        showView(R.id.thumbnail_container);
+        replaceFragment(R.id.thumbnail_container, thumbnailFragment);
+    }
+
+    private void removeView(int viewId) {
         findViewById(viewId).setVisibility(View.GONE);
     }
 
@@ -147,7 +156,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
                 .commit();
     }
 
-    private void showContainer(int viewId) {
+    private void showView(int viewId) {
         findViewById(viewId).setVisibility(View.VISIBLE);
     }
 
