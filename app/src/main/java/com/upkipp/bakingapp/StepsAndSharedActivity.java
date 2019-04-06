@@ -1,6 +1,7 @@
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,13 +28,22 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     private Recipe mSelectedRecipe;
     private boolean mIsTwoPane;
 
+    private int mStepPosition;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_and_shared);
 
+        setDeviceAndVideoOrientationParameters();
+
         if (savedInstanceState == null) {
-            defineSelectedRecipe();
+            if (getIntent() != null
+                    && getIntent().hasExtra(SELECTED_RECIPE_KEY)) {
+
+                defineSelectedRecipe();
+            }
 
         } else {
             restoreSavedValues(savedInstanceState);
@@ -43,19 +53,30 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         defineIsTwoPane();
 
         if (mIsTwoPane) {
-            loadFragments(0);
+            loadFragments();
         }
 
+    }
+
+    private void setDeviceAndVideoOrientationParameters() {
+        boolean isPhone = getResources().getBoolean(R.bool.isPhone);
+
+        if (isPhone) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     private void defineSelectedRecipe() {
         Intent receivedIntent = getIntent();
         mSelectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(SELECTED_RECIPE_KEY));
+        mStepPosition = 0;
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
         mSelectedRecipe =
                 Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_KEY));
+        mStepPosition =
+                savedInstanceState.getInt(DetailsActivity.STEP_POSITION_KEY, 0);
     }
 
     private void loadStepsFragment() {
@@ -72,11 +93,11 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         mIsTwoPane = (findViewById(R.id.master_detail_flow_divider) != null);
     }
 
-    private void loadFragments(int position) {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(position);
+    private void loadFragments() {
+        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(mStepPosition);
         String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
         String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
 
         boolean noDescription = description == null || description.equals("");
         boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
@@ -95,7 +116,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
             removeFragment(DetailsActivity.VIDEO_FRAGMENT_TAG);
 
         } else {
-            updateThumbnailFragment(videoUrl);
+            updateVideoFragment(videoUrl);
         }
 
         if (noThumbnail) {
@@ -103,7 +124,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
             removeFragment(DetailsActivity.THUMBNAIL_FRAGMENT_TAG);
 
         } else {
-            updateVideoFragment(thumbnailUrl);
+            updateThumbnailFragment(thumbnailUrl);
         }
 
         if (noThumbnail && noVideo) {
@@ -162,8 +183,10 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
 
     @Override
     public void onStepClick(int position) {
+        mStepPosition = position;
+
         if (mIsTwoPane) {
-            loadFragments(position);
+            loadFragments();
         } else {
             startDetailsActivity(position);
         }
@@ -175,7 +198,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
 
         Intent detailsIntent = new Intent(getApplicationContext(), DetailsActivity.class);
         detailsIntent.putExtra(DetailsActivity.STEPS_KEY, parceledSteps);
-        detailsIntent.putExtra(DetailsActivity.POSITION_KEY, position);
+        detailsIntent.putExtra(DetailsActivity.STEP_POSITION_KEY, position);
 
         startActivity(detailsIntent);
     }
@@ -185,5 +208,6 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(SELECTED_RECIPE_KEY, Parcels.wrap(mSelectedRecipe));
+        outState.putInt(DetailsActivity.STEP_POSITION_KEY, mStepPosition);
     }
 }

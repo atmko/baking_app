@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".DetailsActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".StepsAndSharedActivity"/>
-
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">
@@ -26,10 +22,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DetailsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".StepsAndSharedActivity"
+            android:screenOrientation="behind"/>
+
         <activity
             android:name=".StepsAndSharedActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="behind">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

@@ -1,6 +1,7 @@
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,14 +20,14 @@ import java.util.Map;
 public class DetailsActivity extends AppCompatActivity {
 
     public static final String STEPS_KEY = "steps";
-    public static final String POSITION_KEY = "position";
+    public static final String STEP_POSITION_KEY = "step_position";
 
     public static final String DESCRIPTION_FRAGMENT_TAG = "description_fragment";
     public static final String VIDEO_FRAGMENT_TAG = "video_fragment";
     public static final String THUMBNAIL_FRAGMENT_TAG = "thumbnail_fragment";
 
     private List<Map<String, String>> mSteps;
-    private int mPosition;
+    private int mStepPosition;
 
     private boolean mIsPhoneLandscape;
     private int mVideoContainerId;
@@ -41,7 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             if (getIntent() != null
                     && getIntent().hasExtra(STEPS_KEY)
-                    && getIntent().hasExtra(POSITION_KEY)) {
+                    && getIntent().hasExtra(STEP_POSITION_KEY)) {
 
                 defineStepsAndPosition();
             }
@@ -53,6 +54,12 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void setDeviceAndVideoOrientationParameters() {
+        boolean isPhone = getResources().getBoolean(R.bool.isPhone);
+
+        if (isPhone) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         mIsPhoneLandscape = findViewById(R.id.video_container_phone_landscape) != null;
 
         if (mIsPhoneLandscape) {
@@ -65,17 +72,17 @@ public class DetailsActivity extends AppCompatActivity {
     private void defineStepsAndPosition() {
         Intent receivedIntent = getIntent();
         mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
-        mPosition = receivedIntent.getIntExtra(POSITION_KEY, 0);
+        mStepPosition = receivedIntent.getIntExtra(STEP_POSITION_KEY, 0);
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
         mSteps =
                 Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
-        mPosition = savedInstanceState.getInt(POSITION_KEY);
+        mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
     }
 
     private void loadFragments() {
-        Map<String, String> selectedStep = mSteps.get(mPosition);
+        Map<String, String> selectedStep = mSteps.get(mStepPosition);
         String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
         String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
         String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
@@ -88,8 +95,24 @@ public class DetailsActivity extends AppCompatActivity {
             removeView(R.id.description_container);
             removeFragment(DESCRIPTION_FRAGMENT_TAG);
 
-        }else {
+        } else {
             loadDescriptionFragment(description);
+        }
+
+        if (noVideo) {
+            removeView(mVideoContainerId);
+            removeFragment(VIDEO_FRAGMENT_TAG);
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+            if (mIsPhoneLandscape) {
+                //hide regular sized video container also
+                removeView(R.id.video_container);
+            }
+
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            loadVideoFragment(videoUrl);
         }
 
         if (noThumbnail) {
@@ -98,19 +121,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         } else {
             loadThumbnailFragment(thumbnailUrl);
-        }
-
-        if (noVideo) {
-            removeView(mVideoContainerId);
-            removeFragment(VIDEO_FRAGMENT_TAG);
-
-            if (mIsPhoneLandscape) {
-                //hide regular sized video container also
-                removeView(R.id.video_container);
-            }
-
-        } else {
-            loadVideoFragment(videoUrl);
         }
 
         if (noThumbnail && noVideo) {
@@ -179,15 +189,15 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void getNextStep(View view) {
-        if (mPosition < mSteps.size() - 1) {
-            mPosition += 1;
+        if (mStepPosition < mSteps.size() - 1) {
+            mStepPosition += 1;
             loadFragments();
         }
     }
 
     public void getPreviousStep(View view) {
-        if (mPosition > 0) {
-            mPosition -= 1;
+        if (mStepPosition > 0) {
+            mStepPosition -= 1;
             loadFragments();
         }
     }
@@ -197,7 +207,7 @@ public class DetailsActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(STEPS_KEY, Parcels.wrap(mSteps));
-        outState.putInt(POSITION_KEY, mPosition);
+        outState.putInt(STEP_POSITION_KEY, mStepPosition);
 
     }
 }
