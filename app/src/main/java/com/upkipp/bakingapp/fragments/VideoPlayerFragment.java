@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +35,15 @@ import com.upkipp.bakingapp.R;
 public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventListener {
     private static String MEDIA_SESSION_TAG = "MEDIA_SESSION";
 
+    private static String VIDEO_URL_KEY = "video_url_key";
+    private static String PLAYBACK_POSITION_KEY = "playback_position";
+
     private Context mContext;
     private SimpleExoPlayerView mVideoPlayerView;
     private String mVideoUrl;
     private SimpleExoPlayer mVideoPlayer;
+
+    private long mPlaybackPosition;
 
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mPlaybackStateBuilder;
@@ -48,12 +52,15 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
-
         mContext = rootView.getContext();
-
         initializeMediaSession();
-
         defineViews(rootView);
+
+        if (savedInstanceState == null) {
+            defineValues();
+        } else {
+            restoreSavedValues(savedInstanceState);
+        }
 
         setViewValues();
 
@@ -63,6 +70,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     public void setVideoUrl(String videoUrl) {
         this.mVideoUrl = videoUrl;
     }
+
 
     private void initializeMediaSession() {
         mMediaSession = new MediaSessionCompat(mContext, MEDIA_SESSION_TAG);
@@ -85,6 +93,17 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     private void defineViews(View rootView) {
         mVideoPlayerView = rootView.findViewById(R.id.video_player_view);
+    }
+
+    private void defineValues() {
+        //mVideoUrl already set through activity
+        mPlaybackPosition = 0;
+    }
+
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mVideoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
+        mPlaybackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY, 0);
+
     }
 
     private void setViewValues() {
@@ -125,9 +144,10 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
             ExtractorMediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory,
                     new DefaultExtractorsFactory(), null, null);
 
-
             mVideoPlayerView.setPlayer(mVideoPlayer);
             mVideoPlayer.prepare(mediaSource);
+            mVideoPlayer.seekTo(mPlaybackPosition);
+            mVideoPlayer.setPlayWhenReady(true);
         }
 
     }
@@ -137,6 +157,14 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         super.onPause();
         //pause video playback
         mVideoPlayer.setPlayWhenReady(false);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(VIDEO_URL_KEY, mVideoUrl);
+        outState.putLong(PLAYBACK_POSITION_KEY, mVideoPlayer.getCurrentPosition());
     }
 
     @Override

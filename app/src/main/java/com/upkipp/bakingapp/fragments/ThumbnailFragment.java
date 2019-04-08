@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.upkipp.bakingapp.R;
+import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.NetworkUtils;
 
 public class ThumbnailFragment extends Fragment {
@@ -29,10 +29,14 @@ public class ThumbnailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_thumbnail, container, false);
-
         mContext = rootView.getContext();
-
         defineViews(rootView);
+
+        if (savedInstanceState == null) {
+
+        } else {
+            restoreSavedValues(savedInstanceState);
+        }
 
         setViewValues();
 
@@ -47,11 +51,23 @@ public class ThumbnailFragment extends Fragment {
         mThumbnailImageView = rootView.findViewById(R.id.thumbnail_image_view);
     }
 
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mThumbnailUrl = savedInstanceState.getString(AppConstants.STEP_DESCRIPTION_KEY);
+
+    }
+
     private void setViewValues() {
         //load image with glide
         NetworkUtils.loadImage(
                 mContext,
                 mThumbnailUrl,
                 mThumbnailImageView);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(AppConstants.STEP_THUMBNAIL_URL_KEY, mThumbnailUrl);
     }
 }

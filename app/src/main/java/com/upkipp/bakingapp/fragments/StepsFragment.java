@@ -43,13 +43,9 @@ public class StepsFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
-
         mContext = rootView.getContext();
-
         defineViews(rootView);
-
         setAdapterData();
 
         return rootView;

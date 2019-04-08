@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.upkipp.bakingapp.fragments.DescriptionFragment;
 import com.upkipp.bakingapp.fragments.ThumbnailFragment;
@@ -45,27 +47,34 @@ public class DetailsActivity extends AppCompatActivity {
                     && getIntent().hasExtra(STEP_POSITION_KEY)) {
 
                 defineStepsAndPosition();
+                loadFragments();
             }
         } else {
             restoreSavedValues(savedInstanceState);
+            configureFragmentVisibility();
+
         }
 
-        loadFragments();
+    }
+
+    private void makeVideoFullScreen() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        margins.setMargins(0,0,0,0);
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
     }
 
     private void setDeviceAndVideoOrientationParameters() {
-        boolean isPhone = getResources().getBoolean(R.bool.isPhone);
-
-        if (isPhone) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        mIsPhoneLandscape = findViewById(R.id.video_container_phone_landscape) != null;
+        mIsPhoneLandscape = getResources().getBoolean(R.bool.isPhoneLandscape);
 
         if (mIsPhoneLandscape) {
-            mVideoContainerId = R.id.video_container_phone_landscape;
-        }else {
-            mVideoContainerId = R.id.video_container;
+            hideUiForFullscreen();
+            makeVideoFullScreen();
         }
     }
 
@@ -100,7 +109,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         if (noVideo) {
-            removeView(mVideoContainerId);
+            removeView(R.id.video_container);
             removeFragment(VIDEO_FRAGMENT_TAG);
 
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -131,6 +140,49 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void configureFragmentVisibility() {
+        Map<String, String> selectedStep = mSteps.get(mStepPosition);
+        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
+        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+
+        boolean noDescription = description == null || description.equals("");
+        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
+        boolean noVideo = videoUrl == null || videoUrl.equals("");
+
+        if (noDescription) {
+            removeView(R.id.description_container);
+            removeFragment(DESCRIPTION_FRAGMENT_TAG);
+
+        }
+
+        if (noVideo) {
+            removeView(R.id.video_container);
+            removeFragment(VIDEO_FRAGMENT_TAG);
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+            if (mIsPhoneLandscape) {
+                //hide regular sized video container also
+                removeView(R.id.video_container);
+            }
+
+        }
+
+        if (noThumbnail) {
+            removeView(R.id.thumbnail_container);
+            removeFragment(THUMBNAIL_FRAGMENT_TAG);
+
+        }
+
+        if (noThumbnail && noVideo) {
+            showView(R.id.placeholder_container);
+
+        } else {
+            removeView(R.id.placeholder_container);
+        }
+    }
+
     private void loadDescriptionFragment(String description) {
         DescriptionFragment descriptionFragment = new DescriptionFragment();
         descriptionFragment.setDescription(description);
@@ -149,8 +201,8 @@ public class DetailsActivity extends AppCompatActivity {
     private void loadVideoFragment(String videoUrl) {
         VideoPlayerFragment videoFragment = new VideoPlayerFragment();
         videoFragment.setVideoUrl(videoUrl);
-        showView(mVideoContainerId);
-        replaceFragment(mVideoContainerId, videoFragment, VIDEO_FRAGMENT_TAG);
+        showView(R.id.video_container);
+        replaceFragment(R.id.video_container, videoFragment, VIDEO_FRAGMENT_TAG);
 
         if (mIsPhoneLandscape) {
             hideUiForFullscreen();
@@ -181,9 +233,11 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void hideUiForFullscreen() {
-        findViewById(R.id.details_scroll_view).setVisibility(View.GONE);
-        findViewById(R.id.back_step_button).setVisibility(View.GONE);
-        findViewById(R.id.next_step_button).setVisibility(View.GONE);
+        findViewById(R.id.right_panel).setVisibility(View.GONE);
+        findViewById(R.id.divider_line).setVisibility(View.GONE);
+        findViewById(R.id.description_container).setVisibility(View.GONE);
+        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
+        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
 
         getSupportActionBar().hide();
     }
@@ -192,6 +246,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (mStepPosition < mSteps.size() - 1) {
             mStepPosition += 1;
             loadFragments();
+//            configureFragmentVisibility();
         }
     }
 
@@ -199,6 +254,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (mStepPosition > 0) {
             mStepPosition -= 1;
             loadFragments();
+//            configureFragmentVisibility();
         }
     }
 
