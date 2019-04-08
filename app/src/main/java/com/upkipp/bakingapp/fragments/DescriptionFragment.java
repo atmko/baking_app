@@ -14,8 +14,8 @@ import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.utils.AppConstants;
 
 public class DescriptionFragment extends Fragment{
-    Context mContext;
-    TextView mDescriptionTextView;
+    private Context mContext;
+    private TextView mDescriptionTextView;
 
     private String mDescription;
     private String mIngredients;
@@ -27,7 +27,6 @@ public class DescriptionFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_description, container, false);
         mContext = rootView.getContext();
         defineViews(rootView);
@@ -43,12 +42,17 @@ public class DescriptionFragment extends Fragment{
         return rootView;
     }
 
+    public void setDescription(String description) {
+        this.mDescription = description;
+    }
+
     public void setIngredients(String ingredients) {
         this.mIngredients = ingredients;
     }
 
-    public void setDescription(String description) {
-        this.mDescription = description;
+    public void reloadMedia() {
+        setViewValues();
+
     }
 
     private void defineViews(View rootView) {

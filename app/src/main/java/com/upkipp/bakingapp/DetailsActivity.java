@@ -3,6 +3,7 @@ package com.upkipp.bakingapp;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,7 +33,6 @@ public class DetailsActivity extends AppCompatActivity {
     private int mStepPosition;
 
     private boolean mIsPhoneLandscape;
-    private int mVideoContainerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,25 +48,13 @@ public class DetailsActivity extends AppCompatActivity {
 
                 defineStepsAndPosition();
                 loadFragments();
+
             }
+
         } else {
             restoreSavedValues(savedInstanceState);
             configureFragmentVisibility();
-
         }
-
-    }
-
-    private void makeVideoFullScreen() {
-        FrameLayout frameLayout = findViewById(R.id.video_container);
-        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
-        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
-//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        margins.setMargins(0,0,0,0);
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        frameLayout.setLayoutParams(margins);
-        frameLayout.setLayoutParams(params);
     }
 
     private void setDeviceAndVideoOrientationParameters() {
@@ -78,16 +66,31 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void hideUiForFullscreen() {
+        findViewById(R.id.right_panel).setVisibility(View.GONE);
+        findViewById(R.id.divider_line).setVisibility(View.GONE);
+        findViewById(R.id.description_container).setVisibility(View.GONE);
+        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
+        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
+
+        getSupportActionBar().hide();
+    }
+
+    private void makeVideoFullScreen() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+        margins.setMargins(0,0,0,0);
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
+    }
+
     private void defineStepsAndPosition() {
         Intent receivedIntent = getIntent();
         mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
         mStepPosition = receivedIntent.getIntExtra(STEP_POSITION_KEY, 0);
-    }
-
-    private void restoreSavedValues(Bundle savedInstanceState) {
-        mSteps =
-                Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
-        mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
     }
 
     private void loadFragments() {
@@ -96,91 +99,11 @@ public class DetailsActivity extends AppCompatActivity {
         String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
         String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
 
-        boolean noDescription = description == null || description.equals("");
-        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
-        boolean noVideo = videoUrl == null || videoUrl.equals("");
+        loadDescriptionFragment(description);
+        loadThumbnailFragment(thumbnailUrl);
+        loadVideoFragment(videoUrl);
 
-        if (noDescription) {
-            removeView(R.id.description_container);
-            removeFragment(DESCRIPTION_FRAGMENT_TAG);
-
-        } else {
-            loadDescriptionFragment(description);
-        }
-
-        if (noVideo) {
-            removeView(R.id.video_container);
-            removeFragment(VIDEO_FRAGMENT_TAG);
-
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-            if (mIsPhoneLandscape) {
-                //hide regular sized video container also
-                removeView(R.id.video_container);
-            }
-
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-            loadVideoFragment(videoUrl);
-        }
-
-        if (noThumbnail) {
-            removeView(R.id.thumbnail_container);
-            removeFragment(THUMBNAIL_FRAGMENT_TAG);
-
-        } else {
-            loadThumbnailFragment(thumbnailUrl);
-        }
-
-        if (noThumbnail && noVideo) {
-            showView(R.id.placeholder_container);
-
-        } else {
-            removeView(R.id.placeholder_container);
-        }
-    }
-
-    private void configureFragmentVisibility() {
-        Map<String, String> selectedStep = mSteps.get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
-
-        boolean noDescription = description == null || description.equals("");
-        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
-        boolean noVideo = videoUrl == null || videoUrl.equals("");
-
-        if (noDescription) {
-            removeView(R.id.description_container);
-            removeFragment(DESCRIPTION_FRAGMENT_TAG);
-
-        }
-
-        if (noVideo) {
-            removeView(R.id.video_container);
-            removeFragment(VIDEO_FRAGMENT_TAG);
-
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-            if (mIsPhoneLandscape) {
-                //hide regular sized video container also
-                removeView(R.id.video_container);
-            }
-
-        }
-
-        if (noThumbnail) {
-            removeView(R.id.thumbnail_container);
-            removeFragment(THUMBNAIL_FRAGMENT_TAG);
-
-        }
-
-        if (noThumbnail && noVideo) {
-            showView(R.id.placeholder_container);
-
-        } else {
-            removeView(R.id.placeholder_container);
-        }
+        configureFragmentVisibility();
     }
 
     private void loadDescriptionFragment(String description) {
@@ -209,16 +132,52 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void removeView(int viewId) {
-        findViewById(viewId).setVisibility(View.GONE);
+    private void replaceFragment(int containerId, Fragment fragment, String fragmentTag) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(containerId, fragment, fragmentTag)
+                .commit();
     }
 
-    private void removeFragment(String fragmentTag) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .remove(fragment)
-                    .commit();
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mSteps =
+                Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
+        mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
+    }
+
+    private void configureFragmentVisibility() {
+        Map<String, String> selectedStep = mSteps.get(mStepPosition);
+        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
+        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+
+        boolean noDescription = description == null || description.equals("");
+        boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
+        boolean noVideo = videoUrl == null || videoUrl.equals("");
+
+        if (noDescription) {
+            removeView(R.id.description_container);
+        } else {
+            showView(R.id.description_container);
+        }
+
+        if (noThumbnail) {
+            removeView(R.id.thumbnail_container);
+        } else {
+            showView(R.id.thumbnail_container);
+        }
+
+        if (noVideo) {
+            removeView(R.id.video_container);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            showView(R.id.video_container);
+        }
+
+        if (noThumbnail && noVideo) {
+            showView(R.id.placeholder_container);
+        } else {
+            removeView(R.id.placeholder_container);
         }
     }
 
@@ -226,36 +185,60 @@ public class DetailsActivity extends AppCompatActivity {
         findViewById(viewId).setVisibility(View.VISIBLE);
     }
 
-    private void replaceFragment(int containerId, Fragment fragment, String fragmentTag) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(containerId, fragment, fragmentTag)
-                .commit();
-    }
-
-    private void hideUiForFullscreen() {
-        findViewById(R.id.right_panel).setVisibility(View.GONE);
-        findViewById(R.id.divider_line).setVisibility(View.GONE);
-        findViewById(R.id.description_container).setVisibility(View.GONE);
-        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
-        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
-
-        getSupportActionBar().hide();
+    private void removeView(int viewId) {
+        findViewById(viewId).setVisibility(View.GONE);
     }
 
     public void getNextStep(View view) {
         if (mStepPosition < mSteps.size() - 1) {
             mStepPosition += 1;
-            loadFragments();
-//            configureFragmentVisibility();
+            setFragmentValues();
         }
     }
 
     public void getPreviousStep(View view) {
         if (mStepPosition > 0) {
             mStepPosition -= 1;
-            loadFragments();
-//            configureFragmentVisibility();
+            setFragmentValues();
         }
+    }
+
+    private void setFragmentValues() {
+        Map<String, String> selectedStep = mSteps.get(mStepPosition);
+        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
+        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+
+        boolean hasDescription = description != null && !description.equals("");
+        boolean hasThumbnail = thumbnailUrl != null && !thumbnailUrl.equals("");
+        boolean hasVideo = videoUrl != null && !videoUrl.equals("");
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        VideoPlayerFragment videoPlayerFragment = (VideoPlayerFragment) fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG);
+
+        if (hasDescription) {
+            showView(R.id.description_container);
+            DescriptionFragment descriptionFragment = (DescriptionFragment) fragmentManager.findFragmentByTag(DESCRIPTION_FRAGMENT_TAG);
+            descriptionFragment.setDescription(description);
+            descriptionFragment.reloadMedia();
+        }
+
+        if (hasThumbnail) {
+            showView(R.id.thumbnail_container);
+            ThumbnailFragment thumbnailFragment = (ThumbnailFragment) fragmentManager.findFragmentByTag(THUMBNAIL_FRAGMENT_TAG);
+            thumbnailFragment.setThumbnailUrl(thumbnailUrl);
+            thumbnailFragment.reloadMedia();
+        }
+
+        if (hasVideo) {
+            showView(R.id.video_container);
+            videoPlayerFragment.setVideoUrl(videoUrl);
+            videoPlayerFragment.reloadMedia();
+        } else {
+            videoPlayerFragment.stopVideoPlayer();
+        }
+
+        configureFragmentVisibility();
     }
 
     @Override

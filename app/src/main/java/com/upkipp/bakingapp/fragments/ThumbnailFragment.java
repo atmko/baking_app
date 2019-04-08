@@ -15,9 +15,8 @@ import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.NetworkUtils;
 
 public class ThumbnailFragment extends Fragment {
-
-    Context mContext;
-    ImageView mThumbnailImageView;
+    private Context mContext;
+    private ImageView mThumbnailImageView;
     private String mThumbnailUrl;
 
     public ThumbnailFragment() {
@@ -27,7 +26,6 @@ public class ThumbnailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_thumbnail, container, false);
         mContext = rootView.getContext();
         defineViews(rootView);
@@ -45,6 +43,10 @@ public class ThumbnailFragment extends Fragment {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.mThumbnailUrl = thumbnailUrl;
+    }
+
+    public void reloadMedia() {
+        setViewValues();
     }
 
     private void defineViews(View rootView) {

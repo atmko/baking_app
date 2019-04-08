@@ -71,6 +71,13 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         this.mVideoUrl = videoUrl;
     }
 
+    public void reloadMedia() {
+        setVideoMediaSource();
+    }
+
+    public void stopVideoPlayer() {
+        mVideoPlayer.stop();
+    }
 
     private void initializeMediaSession() {
         mMediaSession = new MediaSessionCompat(mContext, MEDIA_SESSION_TAG);
@@ -152,11 +159,16 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        //pause video playback
-        mVideoPlayer.setPlayWhenReady(false);
+    private class MediaCallbacks extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            mVideoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onPause() {
+            mVideoPlayer.setPlayWhenReady(false);
+        }
     }
 
     @Override
@@ -166,6 +178,14 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         outState.putString(VIDEO_URL_KEY, mVideoUrl);
         outState.putLong(PLAYBACK_POSITION_KEY, mVideoPlayer.getCurrentPosition());
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //pause video playback
+        mVideoPlayer.setPlayWhenReady(false);
+    }
+
 
     @Override
     public void onDestroy() {
@@ -180,18 +200,6 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
             mVideoPlayer.stop();
             mVideoPlayer.release();
             mVideoPlayer = null;
-        }
-    }
-
-    private class MediaCallbacks extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
-            mVideoPlayer.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onPause() {
-            mVideoPlayer.setPlayWhenReady(false);
         }
     }
 
