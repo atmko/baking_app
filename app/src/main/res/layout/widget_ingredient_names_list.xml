@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_header_footer_height"
+        android:orientation="horizontal"
+        android:background="@color/color_wicked_orange">
+
+        <TextView
+            android:id="@+id/headingText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:layout_marginLeft="@dimen/double_layout_margin"
+            android:layout_marginStart="@dimen/double_layout_margin"
+            android:layout_gravity="center_vertical"
+            android:textSize="20dp"
+            tools:text="List Heading"
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/selectRecipeButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/standard_layout_margin"
+            android:layout_marginRight="@dimen/double_layout_margin"
+            android:layout_marginEnd="@dimen/double_layout_margin"
+            android:layout_marginBottom="@dimen/standard_layout_margin"
+            android:src="@drawable/settings_cog"
+            tools:text="select recipe"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/widget_ingredient_names_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/emptytext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_layout_margin"
+        android:layout_gravity="center"
+        style="@style/step_item_text"
+        android:text="@string/empty_list_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_header_footer_height"
+        android:background="@color/color_wicked_orange">
+
+        <ImageButton
+            android:id="@+id/openRecipeButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/widget_footer_logo_height"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/widget_icon"
+            android:background="@null"/>
+    </LinearLayout>
+
+
+</LinearLayout>

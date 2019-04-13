@@ -6,16 +6,24 @@ Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="widget_minimum_width">160dp</dimen>
+    <dimen name="widget_minimum_height">80dp</dimen>
+    <dimen name="widget_list_item_height">40dp</dimen>
+    <dimen name="widget_footer_logo_height">40dp</dimen>
+    <dimen name="widget_header_footer_height">48dp</dimen>
+
 
     <dimen name="standard_layout_margin">8dp</dimen>
     <dimen name="double_layout_margin">16dp</dimen>
     <dimen name="triple_layout_margin">24dp</dimen>
-
     <dimen name="double_view_padding">16dp</dimen>
+
 
     <dimen name="fragment_container_height">184.5dp</dimen>
 
+
     <dimen name="divider_thickness">2dp</dimen>
     <dimen name="divider__tip_margin">24dp</dimen>
+
 
 </resources>

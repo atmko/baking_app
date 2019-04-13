@@ -1,7 +1,5 @@
 package com.upkipp.bakingapp.utils;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.upkipp.bakingapp.models.Recipe;
 
@@ -45,18 +43,15 @@ public class RecipeParser {
                 currentStep.put("id", String.valueOf(idDoubleValue.intValue()));
 
                 newStepsList.add(currentStep);
-
-//                Log.d("Tagg", Boolean.toString(currentStep.get("quantity") instanceof String));
-
             }
 
-            //create new MovieData from currentObject
+            //create new Recipe from currentRecipeData
             Recipe recipe =
                     new Recipe(
                             //get by keys
                             //id retrieved as double
-                            String.valueOf(currentRecipeData.get(AppConstants.ID_KEY)),
-                            (String) currentRecipeData.get(AppConstants.NAME_KEY),
+                            String.valueOf(currentRecipeData.get(AppConstants.RECIPE_ID_KEY)),
+                            (String) currentRecipeData.get(AppConstants.RECIPE_NAME_KEY),
                             (List<Map<String, String>>) newIngredientList,
                             (List<Map<String, String>>) newStepsList,
                             String.valueOf(currentRecipeData.get(AppConstants.SERVINGS_KEY)),

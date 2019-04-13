@@ -1,18 +1,15 @@
 package com.upkipp.bakingapp.widget;
 
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.upkipp.bakingapp.MainActivity;
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.StepsAndSharedActivity;
 import com.upkipp.bakingapp.models.Recipe;
@@ -24,89 +21,88 @@ import org.parceler.Parcels;
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
-    public static void updateAllAppWidgets(Context context, String state, Recipe recipe) {
+    private static final String TAG = RecipeWidgetProvider.class.getName();
+
+    public static final int STATE_INGREDIENTS = 1;
+    public static final int STATE_RECIPE = 2;
+
+    public static final String SET_INGREDIENT_QUANTITY = "ingredients_quantity_set";
+    public static final String SET_INGREDIENT_MEASURE = "ingredients_measure_set";
+    public static final String SET_INGREDIENT_NAME = "ingredients_name_set";
+
+    public static final String SET_STEP_ID = "steps_id_set";
+    public static final String SET_STEP_SHORT_DESCRIPTION = "steps_shortDescription_set";
+    public static final String SET_STEP_DESCRIPTION = "steps_description_set";
+    public static final String SET_STEP_VIDEO_URL = "steps_videoURL_set";
+    public static final String SET_STEP_THUMBNAIL_URL = "steps_thumbnailURL_set";
+
+    public static final String WIDGET_PREFERENCE_PREFIX = "widget_preferences";
+
+    //loop through and update widgets
+    static void updateAppWidgetIngredients(Context context, Recipe recipe) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
-
-        for (int appWidgetId : appWidgetIds) {
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_recipe_names_list_view);
-            if (state.equals("recipes")) {
-                updateAppWidgetRecipes(context, appWidgetId);
-
-            } else if (state.equals("ingredients")) {
-                updateAppWidgetIngredients(context, appWidgetId, recipe);
-            }
-        }
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    static void updateAppWidgetRecipes(Context context,
-                                       int appWidgetId) {
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
-        int width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-
-        // Construct the RemoteViews object
-        RemoteViews remoteViews = getRecipeListRemoteView(context);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    static void updateAppWidgetIngredients(Context context,
-                                           int appWidgetId, Recipe recipe) {
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
-        int width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        int[] appWidgetIds = appWidgetManager
+                .getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
 
         // Construct the RemoteViews object
         RemoteViews remoteViews = getIngredientListRemoteView(context, recipe);
 
+        //update all widgets
+        for (int appWidgetId : appWidgetIds) {
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        }
 
-//         Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-
+        Log.d(TAG,"widget update complete");
     }
 
-    private static RemoteViews getRecipeListRemoteView(Context context) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_recipe_names_list);
-        remoteViews.setTextViewText(R.id.headingText, "Recipes");
-        remoteViews.setViewVisibility(R.id.backToRecipes, View.INVISIBLE);
-        remoteViews.setViewVisibility(R.id.openRecipeButton, View.INVISIBLE);
+    //loop through and update widgets
+    static void updateAppWidgetRecipes(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager
+                .getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
 
-        Intent serviceIntent =  new Intent(context, WidgetService.class);
-        serviceIntent.setAction(WidgetService.ACTION_GET_INGREDIENTS);
+        // Construct the RemoteViews object
+        RemoteViews remoteViews = getRecipeListRemoteView(context);
 
-        PendingIntent servicePendingIntent = PendingIntent
-                .getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setPendingIntentTemplate(R.id.widget_recipe_names_list_view, servicePendingIntent);
+        //update all widgets
+        for (int appWidgetId : appWidgetIds) {
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        }
 
-        remoteViews.setEmptyView(R.id.widget_recipe_names_list_view, R.id.emptytext);
-
-        return remoteViews;
+        Log.d(TAG,"widget update complete");
     }
 
+    //get remote view for ingredient state
     private static RemoteViews getIngredientListRemoteView(Context context, Recipe recipe) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_recipe_names_list);
-        remoteViews.setTextViewText(R.id.headingText, "Ingredients");
-        remoteViews.setViewVisibility(R.id.backToRecipes, View.VISIBLE);
+        RemoteViews remoteViews = new RemoteViews
+                (context.getPackageName(), R.layout.widget_ingredient_names_list);
+        remoteViews.setTextViewText(R.id.headingText, recipe.getName());
+        remoteViews.setViewVisibility(R.id.selectRecipeButton, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.openRecipeButton, View.VISIBLE);
 
-        //set back button pending intent
-        Intent backToRecipesIntent =  new Intent(context, WidgetService.class);
-        backToRecipesIntent.setAction(WidgetService.ACTION_GET_RECIPE_NAMES);
+        //set remote adapter
+        Intent ingredientSelectionServiceIntent = new Intent
+                (context, IngredientSelectionService.class);
+        remoteViews.setRemoteAdapter
+                (R.id.widget_ingredient_names_list_view, ingredientSelectionServiceIntent);
 
-        PendingIntent backButtonPendingIntent = PendingIntent
-                .getService(context, 0, backToRecipesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //set recipe button pending intent
+        Intent getRecipesIntent =  new Intent(context, WidgetService.class);
+        getRecipesIntent.setAction(WidgetService.ACTION_GET_RECIPE_NAMES);
 
-        remoteViews.setOnClickPendingIntent(R.id.backToRecipes, backButtonPendingIntent);
+        PendingIntent selectRecipeIntent = PendingIntent
+                .getService(context, 0, getRecipesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteViews.setOnClickPendingIntent(R.id.selectRecipeButton, selectRecipeIntent);
+
+        //set pending intent template that does nothing, to nullify previous template
+        Intent nullIntent =  new Intent(context, WidgetService.class);
+        nullIntent.setAction("");
+
+        PendingIntent nullPendingIntent = PendingIntent
+                .getService(context, 0, nullIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteViews.setPendingIntentTemplate(R.id.widget_ingredient_names_list_view, nullPendingIntent);
 
         //set open recipe pending intent
         Intent activityIntent =  new Intent(context, StepsAndSharedActivity.class);
@@ -117,40 +113,42 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
         remoteViews.setOnClickPendingIntent(R.id.openRecipeButton, activityPendingIntent);
 
-        remoteViews.setEmptyView(R.id.widget_recipe_names_list_view, R.id.emptytext);
+        //set empty view
+        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.emptytext);
 
         return remoteViews;
     }
 
-    public static void createEmptyRemoteView(Context context, int appWidgetId) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    //get remote view for recipe state
+    private static RemoteViews getRecipeListRemoteView(Context context) {
+        RemoteViews remoteViews = new RemoteViews
+                (context.getPackageName(), R.layout.widget_ingredient_names_list);
+        remoteViews.setTextViewText(R.id.headingText, context.getString(R.string.widget_select_recipe));
+        remoteViews.setViewVisibility(R.id.selectRecipeButton, View.INVISIBLE);
+        remoteViews.setViewVisibility(R.id.openRecipeButton, View.INVISIBLE);
 
-        // Construct the RemoteViews object
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_recipe_names_list);
-        Intent listWidgetServiceIntent = new Intent(context, ListWidgetService.class);
-        Bundle bundle = new Bundle();
+        //set pending intent template
+        Intent serviceIntent =  new Intent(context, WidgetService.class);
+        serviceIntent.setAction(WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
 
-        listWidgetServiceIntent.putExtras(bundle);
-        remoteViews.setRemoteAdapter(R.id.widget_recipe_names_list_view, listWidgetServiceIntent);
+        PendingIntent servicePendingIntent = PendingIntent
+                .getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        remoteViews.setEmptyView(R.id.widget_recipe_names_list_view, R.id.emptytext);
+        remoteViews.setPendingIntentTemplate
+                (R.id.widget_ingredient_names_list_view, servicePendingIntent);
 
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        //set empty view
+        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.emptytext);
 
+        return remoteViews;
     }
+
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        //There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            createEmptyRemoteView(context,appWidgetId);
-
-            Intent widgetStateIntent = new Intent(context, WidgetService.class);
-            widgetStateIntent.setAction(WidgetService.ACTION_CHECK_WIDGET_STATE);
-            context.startService(widgetStateIntent);
-        }
-
+         Intent ingredientsServiceIntent = new Intent(context, WidgetService.class);
+         ingredientsServiceIntent.setAction(WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
+         context.startService(ingredientsServiceIntent);
     }
 
     @Override
@@ -163,11 +161,4 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
-                                          int appWidgetId, Bundle newOptions) {
-//        WidgetService.getRecipeNames(context);
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-    }
 }
