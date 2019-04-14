@@ -8,7 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.upkipp.bakingapp.adapters.StepsAdapter;
 import com.upkipp.bakingapp.fragments.DescriptionFragment;
@@ -27,14 +28,21 @@ import static com.upkipp.bakingapp.DetailsActivity.DESCRIPTION_FRAGMENT_TAG;
 import static com.upkipp.bakingapp.DetailsActivity.THUMBNAIL_FRAGMENT_TAG;
 import static com.upkipp.bakingapp.DetailsActivity.VIDEO_FRAGMENT_TAG;
 
-public class StepsAndSharedActivity extends AppCompatActivity implements StepsAdapter.OnStepItemClickListener{
+public class StepsAndSharedActivity extends AppCompatActivity
+        implements StepsAdapter.OnStepItemClickListener, View.OnClickListener {
 
     public static final String SELECTED_RECIPE_KEY = "recipe";
+    public static final String FULLSCREEN_REQUEST_KEY = "fullscreen_request";
 
     private Recipe mSelectedRecipe;
     private boolean mIsTwoPane;
 
     private int mStepPosition;
+
+    boolean mIsTabletLandscape;
+
+    //checks if video should be fullscreen after configuration and other instances
+    boolean mFullScreenRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +77,7 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     }
 
     private void setDeviceAndVideoOrientationParameters() {
-        boolean isPhone = getResources().getBoolean(R.bool.isPhone);
-
-        if (isPhone) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        mIsTabletLandscape = getResources().getBoolean(R.bool.isTabletLandscape);
     }
 
     private void defineIsTwoPane() {
@@ -132,6 +136,9 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
                 Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_KEY));
         mStepPosition =
                 savedInstanceState.getInt(DetailsActivity.STEP_POSITION_KEY, 0);
+
+        mFullScreenRequest =
+                savedInstanceState.getBoolean(FULLSCREEN_REQUEST_KEY, false);
     }
 
     private void configureFragmentVisibility() {
@@ -158,8 +165,16 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
 
         if (noVideo) {
             removeView(R.id.video_container);
+
         } else {
             showView(R.id.video_container);
+
+            //if video is meant tobe fullscreen after configuration change(screen rotation)
+            //&& the tablet is in landscape mode
+            if (mFullScreenRequest && mIsTabletLandscape) {
+                hideUiForFullscreen();
+                makeVideoFullScreen();
+            }
         }
 
         if (noThumbnail && noVideo) {
@@ -167,6 +182,26 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
         } else {
             removeView(R.id.placeholder_container);
         }
+    }
+
+    private void hideUiForFullscreen() {
+        getSupportActionBar().hide();
+        findViewById(R.id.container_panel).setVisibility(View.GONE);
+        findViewById(R.id.master_detail_flow_divider).setVisibility(View.GONE);
+        findViewById(R.id.description_container).setVisibility(View.GONE);
+        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
+        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
+    }
+
+    private void makeVideoFullScreen() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+        margins.setMargins(0,0,0,0);
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
     }
 
     private void loadStepsFragment() {
@@ -249,10 +284,57 @@ public class StepsAndSharedActivity extends AppCompatActivity implements StepsAd
     }
 
     @Override
+    public void onClick(View v) {
+        boolean isFullScreen = findViewById(R.id.video_container).getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT;
+
+        if (!mIsTabletLandscape) {
+            //make landscape via sensor. (videos locked to sensor landscape when button clicked)
+            //ensure video will automatically become fullscreen when setRequestedOrientation executed
+            mFullScreenRequest = true;
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+        } else if (mIsTabletLandscape && !isFullScreen) {
+            hideUiForFullscreen();
+            makeVideoFullScreen();
+            //ensure video will automatically become fullscreen when setRequestedOrientation executed
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+        } else if (mIsTabletLandscape && isFullScreen) {
+            //remove fullscreen request
+            mFullScreenRequest = false;
+            showUiForRegularScreen();
+            makeVideoRegularSize();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+
+        }
+    }
+
+    private void showUiForRegularScreen() {
+        getSupportActionBar().hide();
+        findViewById(R.id.container_panel).setVisibility(View.VISIBLE);
+        findViewById(R.id.master_detail_flow_divider).setVisibility(View.VISIBLE);
+
+        getSupportActionBar().show();
+    }
+
+    private void makeVideoRegularSize() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+        margins.setMargins(8,8,8,8);
+        params.height = Math.round(getResources().getDimension(R.dimen.fragment_container_height));
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(SELECTED_RECIPE_KEY, Parcels.wrap(mSelectedRecipe));
         outState.putInt(DetailsActivity.STEP_POSITION_KEY, mStepPosition);
+
+        outState.putBoolean(FULLSCREEN_REQUEST_KEY, mFullScreenRequest);
     }
 }

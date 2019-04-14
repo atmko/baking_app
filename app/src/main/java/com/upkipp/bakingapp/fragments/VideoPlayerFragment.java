@@ -13,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -38,6 +39,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     private static String VIDEO_URL_KEY = "video_url_key";
     private static String PLAYBACK_POSITION_KEY = "playback_position";
 
+    View mRootView;
     private Context mContext;
     private SimpleExoPlayerView mVideoPlayerView;
     private String mVideoUrl;
@@ -45,16 +47,30 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     private long mPlaybackPosition;
 
+    private View.OnClickListener mFullScreenClickListener;
+
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mPlaybackStateBuilder;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mFullScreenClickListener = (View.OnClickListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnClickListener");
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
-        mContext = rootView.getContext();
+        mRootView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        mContext = mRootView.getContext();
         initializeMediaSession();
-        defineViews(rootView);
+        defineViews(mRootView);
+        configureFullScreenClickListener();
 
         if (savedInstanceState == null) {
             defineValues();
@@ -64,7 +80,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
         setViewValues();
 
-        return rootView;
+        return mRootView;
     }
 
     public void setVideoUrl(String videoUrl) {
@@ -100,6 +116,11 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
 
     private void defineViews(View rootView) {
         mVideoPlayerView = rootView.findViewById(R.id.video_player_view);
+    }
+
+    private void configureFullScreenClickListener() {
+        ImageButton fullScreenButton = mRootView.findViewById(R.id.exo_fullscreen);
+        fullScreenButton.setOnClickListener(mFullScreenClickListener);
     }
 
     private void defineValues() {

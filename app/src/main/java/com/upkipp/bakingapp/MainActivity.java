@@ -31,9 +31,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setDeviceAndVideoOrientationParameters();
-
         setContentView(R.layout.activity_main);
 
         defineViews();
@@ -48,14 +45,6 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         getAllRecipes();
-    }
-
-    private void setDeviceAndVideoOrientationParameters() {
-        boolean isPhone = getResources().getBoolean(R.bool.isPhone);
-
-        if (isPhone) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 
     private void defineViews() {

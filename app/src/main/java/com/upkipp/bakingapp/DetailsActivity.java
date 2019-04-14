@@ -20,10 +20,11 @@ import org.parceler.Parcels;
 import java.util.List;
 import java.util.Map;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String STEPS_KEY = "steps";
     public static final String STEP_POSITION_KEY = "step_position";
+    public static final String ORIENTATION_STATE_LIST_KEY = "orientation_request";
 
     public static final String DESCRIPTION_FRAGMENT_TAG = "description_fragment";
     public static final String VIDEO_FRAGMENT_TAG = "video_fragment";
@@ -33,6 +34,10 @@ public class DetailsActivity extends AppCompatActivity {
     private int mStepPosition;
 
     private boolean mIsPhoneLandscape;
+
+    //tracks the orientation state of device through recreations e.g portrait to landscape
+    //boolean values are based upon mIsPhoneLandscape values where true value == mIsPhoneLandscape
+    private boolean[] mOrientationStateList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,50 +52,32 @@ public class DetailsActivity extends AppCompatActivity {
                     && getIntent().hasExtra(STEP_POSITION_KEY)) {
 
                 defineStepsAndPosition();
+                defineOrientationStateList();
                 loadFragments();
-
             }
 
         } else {
             restoreSavedValues(savedInstanceState);
-            configureFragmentVisibility();
+            updateOrientationStateList();
         }
+
+        configureFragmentVisibility();
     }
 
     private void setDeviceAndVideoOrientationParameters() {
         mIsPhoneLandscape = getResources().getBoolean(R.bool.isPhoneLandscape);
-
-        if (mIsPhoneLandscape) {
-            hideUiForFullscreen();
-            makeVideoFullScreen();
-        }
-    }
-
-    private void hideUiForFullscreen() {
-        findViewById(R.id.right_panel).setVisibility(View.GONE);
-        findViewById(R.id.divider_line).setVisibility(View.GONE);
-        findViewById(R.id.description_container).setVisibility(View.GONE);
-        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
-        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
-
-        getSupportActionBar().hide();
-    }
-
-    private void makeVideoFullScreen() {
-        FrameLayout frameLayout = findViewById(R.id.video_container);
-        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
-        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
-        margins.setMargins(0,0,0,0);
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        frameLayout.setLayoutParams(margins);
-        frameLayout.setLayoutParams(params);
     }
 
     private void defineStepsAndPosition() {
         Intent receivedIntent = getIntent();
         mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
         mStepPosition = receivedIntent.getIntExtra(STEP_POSITION_KEY, 0);
+    }
+
+    private void defineOrientationStateList() {
+        mOrientationStateList = new boolean[2];
+        mOrientationStateList[0] = mIsPhoneLandscape;
+        mOrientationStateList[1] = mIsPhoneLandscape;
     }
 
     private void loadFragments() {
@@ -102,8 +89,6 @@ public class DetailsActivity extends AppCompatActivity {
         loadDescriptionFragment(description);
         loadThumbnailFragment(thumbnailUrl);
         loadVideoFragment(videoUrl);
-
-        configureFragmentVisibility();
     }
 
     private void loadDescriptionFragment(String description) {
@@ -126,10 +111,6 @@ public class DetailsActivity extends AppCompatActivity {
         videoFragment.setVideoUrl(videoUrl);
         showView(R.id.video_container);
         replaceFragment(R.id.video_container, videoFragment, VIDEO_FRAGMENT_TAG);
-
-        if (mIsPhoneLandscape) {
-            hideUiForFullscreen();
-        }
     }
 
     private void replaceFragment(int containerId, Fragment fragment, String fragmentTag) {
@@ -138,10 +119,30 @@ public class DetailsActivity extends AppCompatActivity {
                 .commit();
     }
 
+    private void removeView(int viewId) {
+        findViewById(viewId).setVisibility(View.GONE);
+    }
+
+    private void showView(int viewId) {
+        findViewById(viewId).setVisibility(View.VISIBLE);
+    }
+
     private void restoreSavedValues(Bundle savedInstanceState) {
         mSteps =
                 Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
         mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
+
+        mOrientationStateList = savedInstanceState.getBooleanArray(ORIENTATION_STATE_LIST_KEY);
+    }
+
+    private void updateOrientationStateList() {
+        //update orientation history.
+        // from (A, B) to (B, C)
+        // where A is removed,
+        // B is pushed back in history,
+        // C is newly added value
+        mOrientationStateList[0] = mOrientationStateList[1] ;
+        mOrientationStateList[1] = mIsPhoneLandscape;
     }
 
     private void configureFragmentVisibility() {
@@ -168,10 +169,15 @@ public class DetailsActivity extends AppCompatActivity {
 
         if (noVideo) {
             removeView(R.id.video_container);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
             showView(R.id.video_container);
+
+            //if previous orientation was not landscape(portrait) && orientation is now landscape
+            if (mOrientationStateList[0] == false && mIsPhoneLandscape) {
+                hideUiForFullscreen();
+                makeVideoFullScreen();
+            }
         }
 
         if (noThumbnail && noVideo) {
@@ -181,17 +187,31 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void showView(int viewId) {
-        findViewById(viewId).setVisibility(View.VISIBLE);
+    private void hideUiForFullscreen() {
+        getSupportActionBar().hide();
+        findViewById(R.id.right_panel).setVisibility(View.GONE);
+        findViewById(R.id.divider_line).setVisibility(View.GONE);
+        findViewById(R.id.description_container).setVisibility(View.GONE);
+        findViewById(R.id.thumbnail_container).setVisibility(View.GONE);
+        findViewById(R.id.placeholder_container).setVisibility(View.GONE);
     }
 
-    private void removeView(int viewId) {
-        findViewById(viewId).setVisibility(View.GONE);
+    private void makeVideoFullScreen() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+        margins.setMargins(0,0,0,0);
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
     }
 
     public void getNextStep(View view) {
         if (mStepPosition < mSteps.size() - 1) {
             mStepPosition += 1;
+            //update orientation state to prevent initial fullscreen on new step on landscape
+            updateOrientationStateList();
             setFragmentValues();
         }
     }
@@ -199,6 +219,8 @@ public class DetailsActivity extends AppCompatActivity {
     public void getPreviousStep(View view) {
         if (mStepPosition > 0) {
             mStepPosition -= 1;
+            //update orientation state to prevent initial fullscreen on new step on landscape
+            updateOrientationStateList();
             setFragmentValues();
         }
     }
@@ -241,6 +263,49 @@ public class DetailsActivity extends AppCompatActivity {
         configureFragmentVisibility();
     }
 
+    //fullscreen button click listener
+    @Override
+    public void onClick(View v) {
+        boolean isFullScreen = findViewById(R.id.video_container).getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT;
+
+        if (!mIsPhoneLandscape) {
+            //video will automatically become fullscreen when setRequestedOrientation executed
+            //make landscape via sensor. (videos locked to sensor landscape when button clicked)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+        } else if (mIsPhoneLandscape && !isFullScreen) {
+            hideUiForFullscreen();
+            makeVideoFullScreen();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+        } else if (mIsPhoneLandscape && isFullScreen) {
+            showUiForRegularScreen();
+            makeVideoRegularSize();
+            //make landscape via sensor. (videos locked to sensor landscape when button clicked)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+
+        }
+    }
+
+    private void showUiForRegularScreen() {
+        findViewById(R.id.right_panel).setVisibility(View.VISIBLE);
+        findViewById(R.id.divider_line).setVisibility(View.VISIBLE);
+        findViewById(R.id.description_container).setVisibility(View.VISIBLE);
+
+        getSupportActionBar().show();
+    }
+
+    private void makeVideoRegularSize() {
+        FrameLayout frameLayout = findViewById(R.id.video_container);
+        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
+        margins.setMargins(8,8,8,8);
+        params.height = Math.round(getResources().getDimension(R.dimen.fragment_container_height));
+
+        frameLayout.setLayoutParams(margins);
+        frameLayout.setLayoutParams(params);
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -248,5 +313,5 @@ public class DetailsActivity extends AppCompatActivity {
         outState.putParcelable(STEPS_KEY, Parcels.wrap(mSteps));
         outState.putInt(STEP_POSITION_KEY, mStepPosition);
 
-    }
-}
+        outState.putBooleanArray(ORIENTATION_STATE_LIST_KEY, mOrientationStateList);
+    }}
