@@ -62,6 +62,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         configureFragmentVisibility();
+
+        setActionBarTitle();
     }
 
     private void setDeviceAndVideoOrientationParameters() {
@@ -187,6 +189,13 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    private void setActionBarTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar()
+                    .setTitle(mSteps.get(mStepPosition).get(AppConstants.STEP_SHORT_DESCRIPTION_KEY));
+        }
+    }
+
     private void hideUiForFullscreen() {
         getSupportActionBar().hide();
         findViewById(R.id.right_panel).setVisibility(View.GONE);
@@ -212,6 +221,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             mStepPosition += 1;
             //update orientation state to prevent initial fullscreen on new step on landscape
             updateOrientationStateList();
+            setActionBarTitle();
             setFragmentValues();
         }
     }
@@ -221,6 +231,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             mStepPosition -= 1;
             //update orientation state to prevent initial fullscreen on new step on landscape
             updateOrientationStateList();
+            setActionBarTitle();
             setFragmentValues();
         }
     }

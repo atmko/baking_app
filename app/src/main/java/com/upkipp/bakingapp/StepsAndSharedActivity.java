@@ -58,7 +58,6 @@ public class StepsAndSharedActivity extends AppCompatActivity
                     && getIntent().hasExtra(SELECTED_RECIPE_KEY)) {
 
                 defineSelectedRecipe();
-                getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
                 if (mIsTwoPane) {
                     loadFragments();
@@ -74,6 +73,8 @@ public class StepsAndSharedActivity extends AppCompatActivity
         }
 
         loadStepsFragment();
+
+        setActionBarTitle();
 
     }
 
@@ -213,6 +214,13 @@ public class StepsAndSharedActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.steps_container, stepsFragment)
                 .commit();
+    }
+
+    private void setActionBarTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar()
+                    .setTitle(mSelectedRecipe.getName());
+        }
     }
 
     private void removeView(int viewId) {
