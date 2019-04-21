@@ -88,6 +88,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     }
 
     public void reloadMedia() {
+        mPlaybackPosition = 0;
         setVideoMediaSource();
     }
 
