@@ -1,8 +1,8 @@
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +15,7 @@ import com.upkipp.bakingapp.adapters.RecipesAdapter;
 import com.upkipp.bakingapp.models.Recipe;
 import com.upkipp.bakingapp.utils.NetworkUtils;
 import com.upkipp.bakingapp.utils.RecipeParser;
+import com.upkipp.bakingapp.utils.SimpleIdlingResource;
 
 import org.parceler.Parcels;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getIdlingResource();
+
         defineViews();
 
         if (savedInstanceState != null) {
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        if (mSimpleIdlingResource != null) {
+            mSimpleIdlingResource.setIdleState(false);
+        }
         getAllRecipes();
     }
 
@@ -72,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         NetworkUtils.getAllRecipes().getAsString(new StringRequestListener() {
             @Override
             public void onResponse(String responseString) {
+                if (mSimpleIdlingResource != null) {
+                    mSimpleIdlingResource.setIdleState(true);
+                }
                 //parse json string
                 mRecipeList = RecipeParser.parseRecipes(responseString);
                 //add recipes to adapter
@@ -112,4 +121,15 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+    @Nullable
+    SimpleIdlingResource mSimpleIdlingResource;
+
+    public SimpleIdlingResource getIdlingResource() {
+        if (mSimpleIdlingResource == null) {
+            mSimpleIdlingResource = new SimpleIdlingResource();
+        }
+        return mSimpleIdlingResource;
+    }
+
 }

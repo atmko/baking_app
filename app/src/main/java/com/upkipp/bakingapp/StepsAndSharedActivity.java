@@ -41,7 +41,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
 
     boolean mIsTabletLandscape;
 
-    //checks if video should be fullscreen after configuration and other instances
+    //checks if video should be fullscreen after configuration changes(rotations) and other scenarios
     boolean mFullScreenRequest;
 
     @Override
@@ -58,6 +58,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
                     && getIntent().hasExtra(SELECTED_RECIPE_KEY)) {
 
                 defineSelectedRecipe();
+                getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
                 if (mIsTwoPane) {
                     loadFragments();
@@ -310,9 +311,9 @@ public class StepsAndSharedActivity extends AppCompatActivity
     }
 
     private void showUiForRegularScreen() {
-        getSupportActionBar().hide();
         findViewById(R.id.container_panel).setVisibility(View.VISIBLE);
         findViewById(R.id.master_detail_flow_divider).setVisibility(View.VISIBLE);
+        findViewById(R.id.description_container).setVisibility(View.VISIBLE);
 
         getSupportActionBar().show();
     }
