@@ -54,7 +54,7 @@ public class ThumbnailFragment extends Fragment {
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
-        mThumbnailUrl = savedInstanceState.getString(AppConstants.STEP_DESCRIPTION_KEY);
+        mThumbnailUrl = savedInstanceState.getString(AppConstants.STEP_THUMBNAIL_URL_KEY);
 
     }
 
