@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="color_wicked_orange">@android:color/holo_orange_light</color>
+    <color name="warm_grey">#e2ddd3</color>
     <color name="color_divider">#cccccc</color>
 </resources>

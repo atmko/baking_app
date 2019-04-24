@@ -1,24 +1,32 @@
 package com.upkipp.bakingapp;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.upkipp.bakingapp.fragments.DescriptionFragment;
 import com.upkipp.bakingapp.fragments.ThumbnailFragment;
 import com.upkipp.bakingapp.fragments.VideoPlayerFragment;
+import com.upkipp.bakingapp.models.Step;
 import com.upkipp.bakingapp.utils.AppConstants;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     public static final String VIDEO_FRAGMENT_TAG = "video_fragment";
     public static final String THUMBNAIL_FRAGMENT_TAG = "thumbnail_fragment";
 
-    private List<Map<String, String>> mSteps;
+    private List<Step> mAdjustedSteps;
     private int mStepPosition;
 
     private boolean mIsPhoneLandscape;
@@ -72,7 +80,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     private void defineStepsAndPosition() {
         Intent receivedIntent = getIntent();
-        mSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
+        mAdjustedSteps = Parcels.unwrap(receivedIntent.getParcelableExtra(STEPS_KEY));
         mStepPosition = receivedIntent.getIntExtra(STEP_POSITION_KEY, 0);
     }
 
@@ -83,10 +91,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void loadFragments() {
-        Map<String, String> selectedStep = mSteps.get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mAdjustedSteps.get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         loadDescriptionFragment(description);
         loadThumbnailFragment(thumbnailUrl);
@@ -98,7 +106,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         descriptionFragment.setDescription(description);
         showView(R.id.description_container);
         replaceFragment(R.id.description_container, descriptionFragment, DESCRIPTION_FRAGMENT_TAG);
-
     }
 
     private void loadThumbnailFragment(String thumbnailUrl) {
@@ -130,7 +137,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
-        mSteps =
+        mAdjustedSteps =
                 Parcels.unwrap(savedInstanceState.getParcelable(STEPS_KEY));
         mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
 
@@ -148,10 +155,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void configureFragmentVisibility() {
-        Map<String, String> selectedStep = mSteps.get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mAdjustedSteps.get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         boolean noDescription = description == null || description.equals("");
         boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
@@ -192,12 +199,23 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private void setActionBarTitle() {
         if (getSupportActionBar() != null) {
             getSupportActionBar()
-                    .setTitle(mSteps.get(mStepPosition).get(AppConstants.STEP_SHORT_DESCRIPTION_KEY));
+                    .setTitle(mAdjustedSteps.get(mStepPosition).getShortDescription());
         }
     }
 
+    //enable android fullscreen mode
     private void hideUiForFullscreen() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility(uiOptions);
+
         getSupportActionBar().hide();
+
+        //hide layout views
         findViewById(R.id.right_panel).setVisibility(View.GONE);
         findViewById(R.id.divider_line).setVisibility(View.GONE);
         findViewById(R.id.description_container).setVisibility(View.GONE);
@@ -217,7 +235,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void getNextStep(View view) {
-        if (mStepPosition < mSteps.size() - 1) {
+        if (mStepPosition < mAdjustedSteps.size() - 1) {
             mStepPosition += 1;
             //update orientation state to prevent initial fullscreen on new step on landscape
             updateOrientationStateList();
@@ -227,7 +245,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void getPreviousStep(View view) {
-        if (mStepPosition > 0) {
+        //NOTE: ingredients index is 0, steps begin at index of 1
+        if (mStepPosition > 1) {
             mStepPosition -= 1;
             //update orientation state to prevent initial fullscreen on new step on landscape
             updateOrientationStateList();
@@ -237,10 +256,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setFragmentValues() {
-        Map<String, String> selectedStep = mSteps.get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mAdjustedSteps.get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         boolean hasDescription = description != null && !description.equals("");
         boolean hasThumbnail = thumbnailUrl != null && !thumbnailUrl.equals("");
@@ -294,16 +313,22 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             makeVideoRegularSize();
             //make landscape via sensor. (videos locked to sensor landscape when button clicked)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-
         }
     }
 
+    //remove android fullscreen mode
     private void showUiForRegularScreen() {
+        //remove full screen.
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+        decorView.setSystemUiVisibility(uiOptions);
+
+        getSupportActionBar().show();
+
+        //show layout views
         findViewById(R.id.right_panel).setVisibility(View.VISIBLE);
         findViewById(R.id.divider_line).setVisibility(View.VISIBLE);
         findViewById(R.id.description_container).setVisibility(View.VISIBLE);
-
-        getSupportActionBar().show();
     }
 
     private void makeVideoRegularSize() {
@@ -321,8 +346,9 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(STEPS_KEY, Parcels.wrap(mSteps));
+        outState.putParcelable(STEPS_KEY, Parcels.wrap(mAdjustedSteps));
         outState.putInt(STEP_POSITION_KEY, mStepPosition);
 
         outState.putBooleanArray(ORIENTATION_STATE_LIST_KEY, mOrientationStateList);
-    }}
+    }
+}

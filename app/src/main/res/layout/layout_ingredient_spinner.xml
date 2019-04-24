@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Spinner
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/step_item_card_spacing"
+    android:id="@+id/ingredient_spinner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_height="65dp"
+    android:background="@color/warm_grey"
+    android:spinnerMode="@integer/spinner_mode" />

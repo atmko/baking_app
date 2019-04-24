@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.upkipp.bakingapp.models.Recipe;
-import com.upkipp.bakingapp.utils.AppConstants;
+import com.upkipp.bakingapp.models.Step;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.Map;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -37,6 +36,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertTrue;
 
 //NOTE tests are base on data passed into activity through intents. Changing this data may cause tests to fail
+//Note: for tablet testing
 @RunWith(AndroidJUnit4.class)
 public class StepsAndSharedActivityTest {
 
@@ -105,18 +105,19 @@ public class StepsAndSharedActivityTest {
     }
 
     @Test
-    public void fragmen_Visibility_Test() {
+    public void fragment_Visibility_Test() {
         Recipe recipe = startActivityWithRecipe();
-        List<Map<String, String>> stepList = recipe.getSteps();
+        List<Step> stepList = recipe.getAdjustedSteps();
 
-        for (int index = 0; index < stepList.size(); index++) {
+        //NOTE: default value, ingredients index is 0, steps begin at index of 1
+        for (int index = 1; index < stepList.size(); index++) {
             onView(withId(R.id.steps_recycler_view)).perform(actionOnItemAtPosition(index, click()));
 
-            Map<String, String> currentStep = stepList.get(index);
+            Step currentStep = stepList.get(index);
 
-            String description = currentStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-            String videoUrl = currentStep.get(AppConstants.STEP_VIDEO_URL_KEY);
-            String thumbnailUrl = currentStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+            String description = currentStep.getDescription();
+            String videoUrl = currentStep.getVideoUrl();
+            String thumbnailUrl = currentStep.getThumbnailUrl();
 
             if (description != null && !description.equals("")) {
                 onView(withId(R.id.description_container)).check(matches(isDisplayed()));

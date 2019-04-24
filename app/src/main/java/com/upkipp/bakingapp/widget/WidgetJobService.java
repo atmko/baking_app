@@ -1,11 +1,11 @@
 package com.upkipp.bakingapp.widget;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -24,35 +24,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class WidgetService extends IntentService {
-    private static final String TAG = WidgetService.class.getName();
+public class WidgetJobService extends JobIntentService {
+    private static final String TAG = WidgetJobService.class.getName();
     public static final String ACTION_GET_RECIPE_NAMES = "com.upkipp.android.bakingapp.action.get_recipe_names";
-    public static final String ACTION_GET_INGREDIENTS = "com.upkipp.android.bakingapp.action.get_ingredients";
+    public static final String ACTION_HANDSHAKE_GET_RECIPE_NAMES = "com.upkipp.android.bakingapp.action.handshake_get_recipe_names";
+
     public static final String ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE = "com.upkipp.android.bakingapp.action.save_and_or_load_widget_recipe";
+    public static final String ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE = "com.upkipp.android.bakingapp.action.handshake_save_and_or_load_widget_recipe";
 
     public static final String RECIPE_LIST_KEY = "recipes_list";
+    public static final int JOBS_ID = 22;
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-//     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public WidgetService() {
-        super(TAG);
+    public static void queueWork(Context context, Intent intent, int id) {
+        enqueueWork(context,
+                WidgetJobService.class,
+                id,
+                intent);
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent serviceIntent) {
+    protected void onHandleWork(@Nullable Intent serviceIntent) {
         if (serviceIntent != null) {
             String action = serviceIntent.getAction();
+            //action to take as a result of received action
+            String handshakeAction;
 
-             if (action.equals(ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
-                 Log.d(TAG,"starting service action: " + action);
-                 saveAndOrLoadWidgetRecipe(serviceIntent);
+            if (action.equals(ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
+                handshakeAction = ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE;
+
+                serviceIntent.setAction(handshakeAction);
+
+                Log.d(TAG,"starting service action: " + handshakeAction);
+                saveAndOrLoadWidgetRecipe(serviceIntent);
 
             } else if (action.equals(ACTION_GET_RECIPE_NAMES)) {
-                 Log.d(TAG,"starting service action: " + action);
-                 getRecipeNames(serviceIntent);
+                handshakeAction = ACTION_HANDSHAKE_GET_RECIPE_NAMES;
+
+                serviceIntent.setAction(handshakeAction);
+
+                Log.d(TAG, "starting service action: " + handshakeAction);
+                getRecipeNames(serviceIntent);
             }
         }
     }
@@ -87,8 +98,8 @@ public class WidgetService extends IntentService {
     private void saveRecipePreference(Recipe recipe) {
         String id = recipe.getId();
         String name = recipe.getName();
-        List<Map<String, String>> ingredients = recipe.getIngredients();
-        List<Map<String, String>> steps = recipe.getSteps();
+        List<Map<String, String>> ingredients = recipe.getIngredientPrototype(recipe.getIngredients());
+        List<Map<String, String>> steps = recipe.getStepPrototype(recipe.getSteps());
         String servings = recipe.getServings();
         String image = recipe.getImage();
 

@@ -1,7 +1,9 @@
 package com.upkipp.bakingapp.utils;
 
 import com.google.gson.Gson;
+import com.upkipp.bakingapp.models.Ingredient;
 import com.upkipp.bakingapp.models.Recipe;
+import com.upkipp.bakingapp.models.Step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +20,40 @@ public class RecipeParser {
         for (int index = 0; index < gsonToList.size() ; index++) {
             Map currentRecipeData = (Map) gsonToList.get(index);//get current movie
 
-            List newIngredientList = new ArrayList();
+            List<Ingredient> ingredientList = new ArrayList<>();
 
-            List ingredientList = (List)currentRecipeData.get(AppConstants.INGREDIENTS_KEY);
-            for (int ingredientIndex = 0; ingredientIndex < ingredientList.size() ; ingredientIndex++) {
-                Map currentIngredient = (Map) ingredientList.get(ingredientIndex);//get current movie
+            List ingredientMapList = (List)currentRecipeData.get(AppConstants.INGREDIENTS_KEY);
+            for (int ingredientIndex = 0; ingredientIndex < ingredientMapList.size() ; ingredientIndex++) {
+                Map currentIngredientMap = (Map) ingredientMapList.get(ingredientIndex);//get current movie
 
-                currentIngredient.put("quantity", String.valueOf(currentIngredient.get("quantity")));
 
-                newIngredientList.add(currentIngredient);
+                Ingredient currentIngredient =
+                        new Ingredient(
+                                String.valueOf(currentIngredientMap.get("quantity")),
+                                (String) currentIngredientMap.get(AppConstants.INGREDIENT_MEASURE_KEY),
+                                (String) currentIngredientMap.get(AppConstants.INGREDIENT_NAME_KEY));
 
-//                Log.d("Tagg", Boolean.toString(currentIngredient.get("quantity") instanceof String));
-
+                ingredientList.add(currentIngredient);
             }
 
-            List newStepsList = new ArrayList();
+            List<Step> stepList = new ArrayList<>();
 
-            List stepList = (List)currentRecipeData.get(AppConstants.STEPS_KEY);
-            for (int stepIndex = 0; stepIndex < stepList.size() ; stepIndex++) {
-                Map currentStep = (Map) stepList.get(stepIndex);//get current movie
+            List stepMapList = (List)currentRecipeData.get(AppConstants.STEPS_KEY);
+            for (int stepIndex = 0; stepIndex < stepMapList.size() ; stepIndex++) {
+                Map currentStepMap = (Map) stepMapList.get(stepIndex);//get current movie
 
-                Double idDoubleValue = (double)currentStep.get("id");
+                //gson numbers default to double
+                Double idDoubleValue = (double)currentStepMap.get(AppConstants.STEP_ID_KEY);
 
-                currentStep.put("id", String.valueOf(idDoubleValue.intValue()));
+                Step currentStep =
+                        new Step(String.valueOf(idDoubleValue.intValue()),
+                                (String) currentStepMap.get(AppConstants.STEP_SHORT_DESCRIPTION_KEY),
+                                (String) currentStepMap.get(AppConstants.STEP_DESCRIPTION_KEY),
+                                (String) currentStepMap.get(AppConstants.STEP_VIDEO_URL_KEY),
+                                (String) currentStepMap.get(AppConstants.STEP_THUMBNAIL_URL_KEY)
+                );
 
-                newStepsList.add(currentStep);
+                stepList.add(currentStep);
             }
 
             //create new Recipe from currentRecipeData
@@ -52,8 +63,8 @@ public class RecipeParser {
                             //id retrieved as double
                             String.valueOf(currentRecipeData.get(AppConstants.RECIPE_ID_KEY)),
                             (String) currentRecipeData.get(AppConstants.RECIPE_NAME_KEY),
-                            (List<Map<String, String>>) newIngredientList,
-                            (List<Map<String, String>>) newStepsList,
+                            ingredientList,
+                            stepList,
                             String.valueOf(currentRecipeData.get(AppConstants.SERVINGS_KEY)),
                             (String) currentRecipeData.get(AppConstants.IMAGE_KEY)
                     );

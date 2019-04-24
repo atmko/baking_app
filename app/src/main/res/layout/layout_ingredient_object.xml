@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/ingredient_heading_text_view"
+        style="@style/step_item_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="@string/ingredients_text"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/ingredient_name_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/double_view_padding"
+        android:layout_weight="3"
+        tools:text="ingredient name"
+        tools:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/quantity_text_view"
+        android:layout_width="0dp"
+        android:layout_margin="@dimen/double_view_padding"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="quantity"
+        tools:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/measure_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/double_view_padding"
+        android:layout_weight="1"
+        tools:text="measure"
+        tools:visibility="gone"/>
+
+</LinearLayout>

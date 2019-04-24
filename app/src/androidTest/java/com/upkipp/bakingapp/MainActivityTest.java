@@ -13,11 +13,8 @@ import android.view.View;
 
 import com.upkipp.bakingapp.adapters.RecipesAdapter;
 import com.upkipp.bakingapp.models.Recipe;
-import com.upkipp.bakingapp.utils.AppConstants;
+import com.upkipp.bakingapp.models.Step;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-import java.util.Map;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -59,7 +55,7 @@ public class MainActivityTest {
 
             Recipe currentRecipe = recipeList.get(index);
             onView(withId(R.id.RecipesRecyclerView)).perform(actionOnItemAtPosition(index, click()));
-            List<Map<String, String>> stepsList = currentRecipe.getSteps();
+            List<Step> stepsList = currentRecipe.getAdjustedSteps();
 
             checkSteps(stepsList);
             pressBack();
@@ -67,12 +63,13 @@ public class MainActivityTest {
         }
     }
 
-    private void checkSteps(List<Map<String, String>> stepsList) {
-        for (int index = 0; index < stepsList.size(); index++) {
-            Map<String, String> currentStep = stepsList.get(index);
-            String description = currentStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-            String thumbnailUrl = currentStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-            String videoUrl = currentStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+    private void checkSteps(List<Step> stepsList) {
+        //NOTE: ingredients index is 0, steps begin at index of 1
+        for (int index = 1; index < stepsList.size(); index++) {
+            Step currentStep = stepsList.get(index);
+            String description = currentStep.getDescription();
+            String thumbnailUrl = currentStep.getThumbnailUrl();
+            String videoUrl = currentStep.getVideoUrl();
 
             onView(withId(R.id.steps_recycler_view)).perform(actionOnItemAtPosition(index, click()));
 

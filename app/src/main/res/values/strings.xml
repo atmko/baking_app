@@ -17,4 +17,6 @@
     <string name="content_description_step_demonstration_image" translatable="true">demonstration image</string>
     <string name="content_description_placeholder_image" translatable="true">placeholder image</string>
 
+    <!--ingredient_spinner dropdown / dialog-->
+    <string name="spinner_mode">dropdown</string>
 </resources>

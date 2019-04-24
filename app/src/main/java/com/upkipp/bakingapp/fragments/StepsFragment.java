@@ -13,6 +13,11 @@ import android.view.ViewGroup;
 
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.adapters.StepsAdapter;
+import com.upkipp.bakingapp.models.Ingredient;
+import com.upkipp.bakingapp.models.Step;
+import com.upkipp.bakingapp.utils.AppConstants;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 import java.util.Map;
@@ -22,8 +27,8 @@ public class StepsFragment extends Fragment{
     StepsAdapter mStepsAdapter;
     RecyclerView mStepsRecyclerView;
 
-    private List<Map<String, String>> mIngredientsList;
-    private List<Map<String, String>> mStepsList;
+    private List<Ingredient> mIngredientsList;
+    private List<Step> mStepsList;
 
     public StepsFragment() {
 
@@ -46,6 +51,13 @@ public class StepsFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
         mContext = rootView.getContext();
         defineViews(rootView);
+
+        if (savedInstanceState == null) {
+
+        } else {
+            restoreSavedValues(savedInstanceState);
+        }
+
         setAdapterData();
 
         return rootView;
@@ -61,8 +73,14 @@ public class StepsFragment extends Fragment{
 
     }
 
+    private void restoreSavedValues(Bundle savedInstanceState) {
+        mStepsList = Parcels.unwrap(savedInstanceState.getParcelable(AppConstants.STEPS_KEY));
+        mIngredientsList = Parcels.unwrap(savedInstanceState.getParcelable(AppConstants.INGREDIENTS_KEY));
+
+    }
+
     private void setAdapterData() {
-        mStepsAdapter.setStepList(mStepsList);
+        mStepsAdapter.setStepList(mStepsList, mIngredientsList);
     }
 
     private LinearLayoutManager configureLayoutManager() {
@@ -71,12 +89,19 @@ public class StepsFragment extends Fragment{
         return layoutManager;
     }
 
-    public void setIngredientsList(List<Map<String, String>> ingredientsList) {
+    public void setIngredientsList(List<Ingredient> ingredientsList) {
         this.mIngredientsList = ingredientsList;
     }
 
-    public void setStepsList(List<Map<String, String>> stepsList) {
+    public void setStepsList(List<Step> stepsList) {
         this.mStepsList = stepsList;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(AppConstants.STEPS_KEY, Parcels.wrap(mStepsList));
+        outState.putParcelable(AppConstants.INGREDIENTS_KEY, Parcels.wrap(mIngredientsList));
+    }
 }

@@ -87,20 +87,20 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
                 (R.id.widget_ingredient_names_list_view, ingredientSelectionServiceIntent);
 
         //set recipe button pending intent
-        Intent getRecipesIntent =  new Intent(context, WidgetService.class);
-        getRecipesIntent.setAction(WidgetService.ACTION_GET_RECIPE_NAMES);
+        Intent getRecipesIntent =  new Intent(context, JobServiceReceiver.class);
+        getRecipesIntent.setAction(WidgetJobService.ACTION_GET_RECIPE_NAMES);
 
         PendingIntent selectRecipeIntent = PendingIntent
-                .getService(context, 0, getRecipesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                .getBroadcast(context, 0, getRecipesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         remoteViews.setOnClickPendingIntent(R.id.selectRecipeButton, selectRecipeIntent);
 
         //set pending intent template that does nothing, to nullify previous template
-        Intent nullIntent =  new Intent(context, WidgetService.class);
+        Intent nullIntent =  new Intent(context, JobServiceReceiver.class);
         nullIntent.setAction("");
 
         PendingIntent nullPendingIntent = PendingIntent
-                .getService(context, 0, nullIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                .getBroadcast(context, 0, nullIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         remoteViews.setPendingIntentTemplate(R.id.widget_ingredient_names_list_view, nullPendingIntent);
 
@@ -128,14 +128,14 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         remoteViews.setViewVisibility(R.id.openRecipeButton, View.INVISIBLE);
 
         //set pending intent template
-        Intent serviceIntent =  new Intent(context, WidgetService.class);
-        serviceIntent.setAction(WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
+        Intent broadcastIntent =  new Intent(context, JobServiceReceiver.class);
+        broadcastIntent.setAction(WidgetJobService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
 
-        PendingIntent servicePendingIntent = PendingIntent
-                .getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent broadcastPendingIntent = PendingIntent
+                .getBroadcast(context, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         remoteViews.setPendingIntentTemplate
-                (R.id.widget_ingredient_names_list_view, servicePendingIntent);
+                (R.id.widget_ingredient_names_list_view, broadcastPendingIntent);
 
         //set empty view
         remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.emptytext);
@@ -143,12 +143,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         return remoteViews;
     }
 
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-         Intent ingredientsServiceIntent = new Intent(context, WidgetService.class);
-         ingredientsServiceIntent.setAction(WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
-         context.startService(ingredientsServiceIntent);
+         Intent ingredientsServiceIntent = new Intent(context, JobServiceReceiver.class);
+         ingredientsServiceIntent.setAction(WidgetJobService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
+         context.sendBroadcast(ingredientsServiceIntent);
     }
 
     @Override

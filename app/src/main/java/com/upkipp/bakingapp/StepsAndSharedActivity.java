@@ -2,13 +2,16 @@ package com.upkipp.bakingapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.upkipp.bakingapp.adapters.StepsAdapter;
@@ -17,12 +20,11 @@ import com.upkipp.bakingapp.fragments.ThumbnailFragment;
 import com.upkipp.bakingapp.fragments.StepsFragment;
 import com.upkipp.bakingapp.fragments.VideoPlayerFragment;
 import com.upkipp.bakingapp.models.Recipe;
-import com.upkipp.bakingapp.utils.AppConstants;
+import com.upkipp.bakingapp.models.Step;
 
 import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.upkipp.bakingapp.DetailsActivity.DESCRIPTION_FRAGMENT_TAG;
 import static com.upkipp.bakingapp.DetailsActivity.THUMBNAIL_FRAGMENT_TAG;
@@ -64,6 +66,8 @@ public class StepsAndSharedActivity extends AppCompatActivity
                 }
             }
 
+            loadStepsFragment();
+
         } else {
             restoreSavedValues(savedInstanceState);
 
@@ -72,10 +76,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
             }
         }
 
-        loadStepsFragment();
-
         setActionBarTitle();
-
     }
 
     private void setDeviceAndVideoOrientationParameters() {
@@ -89,14 +90,15 @@ public class StepsAndSharedActivity extends AppCompatActivity
     private void defineSelectedRecipe() {
         Intent receivedIntent = getIntent();
         mSelectedRecipe = Parcels.unwrap(receivedIntent.getParcelableExtra(SELECTED_RECIPE_KEY));
-        mStepPosition = 0;
+        //NOTE: ingredients index is 0, steps begin at index of 1
+        mStepPosition = 1;
     }
 
     private void loadFragments() {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mSelectedRecipe.getAdjustedSteps().get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         loadDescriptionFragment(description);
         loadThumbnailFragment(thumbnailUrl);
@@ -136,18 +138,20 @@ public class StepsAndSharedActivity extends AppCompatActivity
     private void restoreSavedValues(Bundle savedInstanceState) {
         mSelectedRecipe =
                 Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE_KEY));
+
+        //NOTE: default value, ingredients index is 0, steps begin at index of 1
         mStepPosition =
-                savedInstanceState.getInt(DetailsActivity.STEP_POSITION_KEY, 0);
+                savedInstanceState.getInt(DetailsActivity.STEP_POSITION_KEY, 1);
 
         mFullScreenRequest =
                 savedInstanceState.getBoolean(FULLSCREEN_REQUEST_KEY, false);
     }
 
     private void configureFragmentVisibility() {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mSelectedRecipe.getAdjustedSteps().get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         boolean noDescription = description == null || description.equals("");
         boolean noThumbnail = thumbnailUrl == null || thumbnailUrl.equals("");
@@ -186,8 +190,19 @@ public class StepsAndSharedActivity extends AppCompatActivity
         }
     }
 
+    //enable android fullscreen mode
     private void hideUiForFullscreen() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility(uiOptions);
+
         getSupportActionBar().hide();
+
+        //hide layout views
         findViewById(R.id.container_panel).setVisibility(View.GONE);
         findViewById(R.id.master_detail_flow_divider).setVisibility(View.GONE);
         findViewById(R.id.description_container).setVisibility(View.GONE);
@@ -209,7 +224,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
     private void loadStepsFragment() {
         StepsFragment stepsFragment = new StepsFragment();
         stepsFragment.setIngredientsList(mSelectedRecipe.getIngredients());
-        stepsFragment.setStepsList(mSelectedRecipe.getSteps());
+        stepsFragment.setStepsList(mSelectedRecipe.getAdjustedSteps());
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.steps_container, stepsFragment)
@@ -244,10 +259,10 @@ public class StepsAndSharedActivity extends AppCompatActivity
 
     //TODO consider making fragment utils class to avoid repeat code in DetailsActivity
     private void setFragmentValues() {
-        Map<String, String> selectedStep = mSelectedRecipe.getSteps().get(mStepPosition);
-        String description = selectedStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-        String thumbnailUrl = selectedStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
-        String videoUrl = selectedStep.get(AppConstants.STEP_VIDEO_URL_KEY);
+        Step selectedStep = mSelectedRecipe.getAdjustedSteps().get(mStepPosition);
+        String description = selectedStep.getDescription();
+        String thumbnailUrl = selectedStep.getThumbnailUrl();
+        String videoUrl = selectedStep.getVideoUrl();
 
         boolean hasDescription = description != null && !description.equals("");
         boolean hasThumbnail = thumbnailUrl != null && !thumbnailUrl.equals("");
@@ -282,8 +297,8 @@ public class StepsAndSharedActivity extends AppCompatActivity
     }
 
     private void startDetailsActivity(int position) {
-        List<Map<String, String>> steps = mSelectedRecipe.getSteps();
-        Parcelable parceledSteps = Parcels.wrap(steps);
+        List<Step> adjustedSteps = mSelectedRecipe.getAdjustedSteps();
+        Parcelable parceledSteps = Parcels.wrap(adjustedSteps);
 
         Intent detailsIntent = new Intent(getApplicationContext(), DetailsActivity.class);
         detailsIntent.putExtra(DetailsActivity.STEPS_KEY, parceledSteps);
@@ -318,12 +333,19 @@ public class StepsAndSharedActivity extends AppCompatActivity
         }
     }
 
+    //remove android fullscreen mode
     private void showUiForRegularScreen() {
+        //remove full screen.
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+        decorView.setSystemUiVisibility(uiOptions);
+
+        getSupportActionBar().show();
+
+        //show layout views
         findViewById(R.id.container_panel).setVisibility(View.VISIBLE);
         findViewById(R.id.master_detail_flow_divider).setVisibility(View.VISIBLE);
         findViewById(R.id.description_container).setVisibility(View.VISIBLE);
-
-        getSupportActionBar().show();
     }
 
     private void makeVideoRegularSize() {

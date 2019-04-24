@@ -14,6 +14,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.upkipp.bakingapp.models.Step;
 import com.upkipp.bakingapp.utils.AppConstants;
 
 import org.hamcrest.Matcher;
@@ -35,6 +36,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertTrue;
 
 //NOTE tests are base on data passed into activity through intents. Changing this data may cause tests to fail
+//Note: for phone testing
 @RunWith(AndroidJUnit4.class)
 public class DetailsActivityTest {
 
@@ -119,15 +121,15 @@ public class DetailsActivityTest {
 
     @Test
     public void fragment_Visibility_Test() {
-        List<Map<String, String>> stepList = startActivityWithSteps();
+        List<Step> stepList = startActivityWithSteps();
 
         for (int index = 0; index < stepList.size(); index++) {
 
-            Map<String, String> currentStep = stepList.get(index);
+            Step currentStep = stepList.get(index);
 
-            String description = currentStep.get(AppConstants.STEP_DESCRIPTION_KEY);
-            String videoUrl = currentStep.get(AppConstants.STEP_VIDEO_URL_KEY);
-            String thumbnailUrl = currentStep.get(AppConstants.STEP_THUMBNAIL_URL_KEY);
+            String description = currentStep.getDescription();
+            String videoUrl = currentStep.getVideoUrl();
+            String thumbnailUrl = currentStep.getThumbnailUrl();
 
             if (description != null && !description.equals("")) {
                 onView(withId(R.id.description_container)).check(matches(isDisplayed()));
@@ -150,8 +152,8 @@ public class DetailsActivityTest {
         }
     }
 
-    private List<Map<String,String>> startActivityWithSteps() {
-        List<Map<String, String>> stepsList = TestConstants.getTestSteps();
+    private List<Step> startActivityWithSteps() {
+        List<Step> stepsList = TestConstants.getTestSteps();
 
         Intent testIntent = new Intent();
 
@@ -164,7 +166,7 @@ public class DetailsActivityTest {
         detailsActivityTestRule.launchActivity(testIntent);
 
         return stepsList;
-    }
+}
 
     private ViewAction orientationChange(final int orientation) {
         return new ViewAction() {

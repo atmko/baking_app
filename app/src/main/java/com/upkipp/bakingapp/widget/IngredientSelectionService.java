@@ -15,7 +15,9 @@ import android.widget.RemoteViewsService;
 
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.StepsAndSharedActivity;
+import com.upkipp.bakingapp.models.Ingredient;
 import com.upkipp.bakingapp.models.Recipe;
+import com.upkipp.bakingapp.models.Step;
 import com.upkipp.bakingapp.utils.AppConstants;
 
 import org.parceler.Parcels;
@@ -23,13 +25,9 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import static com.upkipp.bakingapp.widget.WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE;
 
 //remote view factory
 public class IngredientSelectionService extends RemoteViewsService {
@@ -64,9 +62,9 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
     private void registerBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WidgetService.ACTION_GET_RECIPE_NAMES);
-        intentFilter.addAction(WidgetService.ACTION_GET_INGREDIENTS);
-        intentFilter.addAction(WidgetService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
+        intentFilter.addAction(WidgetJobService.ACTION_HANDSHAKE_GET_RECIPE_NAMES);
+//        intentFilter.addAction(WidgetService.ACTION_GET_INGREDIENTS);
+        intentFilter.addAction(WidgetJobService.ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(IngredientSelectionRemoteViewsFactory.this,
                 intentFilter);
     }
@@ -83,15 +81,15 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
         String action = intent.getAction();
 
-        if (action.equals(ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
+        if (action.equals(WidgetJobService.ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
             //update relevant set values
             mState = RecipeWidgetProvider.STATE_INGREDIENTS;
             mRecipe = getSavedRecipe(mContext);
 
-        } else if (action.equals(WidgetService.ACTION_GET_RECIPE_NAMES)) {
+        } else if (action.equals(WidgetJobService.ACTION_HANDSHAKE_GET_RECIPE_NAMES)) {
             //update relevant set values
             mState = RecipeWidgetProvider.STATE_RECIPE;
-            Parcelable recipeListParcel = intent.getParcelableExtra(WidgetService.RECIPE_LIST_KEY);
+            Parcelable recipeListParcel = intent.getParcelableExtra(WidgetJobService.RECIPE_LIST_KEY);
             mRecipeList = Parcels.unwrap(recipeListParcel);
         }
 
@@ -131,15 +129,15 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
         String id = sharedPreferences.getString(AppConstants.RECIPE_ID_KEY, "");
         String name = sharedPreferences.getString(AppConstants.RECIPE_NAME_KEY, "");;
-        List<Map<String, String>> ingredients = getRecipeIngredients(sharedPreferences);
-        List<Map<String, String>> steps = getRecipeSteps(sharedPreferences);
+        List<Ingredient> ingredients = getRecipeIngredients(sharedPreferences);
+        List<Step> steps = getRecipeSteps(sharedPreferences);
         String servings = sharedPreferences.getString(AppConstants.SERVINGS_KEY, "");
         String image = sharedPreferences.getString(AppConstants.IMAGE_KEY, "");
 
         return new Recipe(id, name, ingredients, steps, servings, image);
     }
 
-    private static List<Map<String, String>> getRecipeIngredients(SharedPreferences sharedPreferences) {
+    private static List<Ingredient> getRecipeIngredients(SharedPreferences sharedPreferences) {
         Set<String> quantitySet = sharedPreferences.getStringSet
                 (RecipeWidgetProvider.SET_INGREDIENT_QUANTITY, new HashSet<String>());
 
@@ -173,10 +171,9 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
         Collections.sort(measureList, comparator);
         Collections.sort(nameList, comparator);
 
-        List<Map<String, String>> ingredientList = new ArrayList<>();
+        List<Ingredient> ingredientList = new ArrayList<>();
 
         for (int index = 0; index < quantitySet.size(); index++) {
-            Map<String, String> ingredient = new HashMap<>();
 
             String quantityWithIdPrefix = quantityList.get(index);
             String measureWithIdPrefix = measureList.get(index);
@@ -188,17 +185,14 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
             String measure = measureWithIdPrefix.replace(prefix, "");
             String name = nameWithIdPrefix.replace(prefix, "");
 
-            ingredient.put(AppConstants.INGREDIENT_QUANTITY_KEY, quantity);
-            ingredient.put(AppConstants.INGREDIENT_MEASURE_KEY, measure);
-            ingredient.put(AppConstants.INGREDIENT_NAME_KEY, name);
-
+            Ingredient ingredient = new Ingredient(quantity, measure, name);
             ingredientList.add(ingredient);
         }
 
         return ingredientList;
     }
 
-    private static List<Map<String, String>> getRecipeSteps(SharedPreferences sharedPreferences) {
+    private static List<Step> getRecipeSteps(SharedPreferences sharedPreferences) {
         Set<String> idSet = sharedPreferences.getStringSet
                 (RecipeWidgetProvider.SET_STEP_ID, new HashSet<String>());
 
@@ -242,10 +236,9 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
         Collections.sort(videoUrlList, comparator);
         Collections.sort(thumbnailUrlList, comparator);
 
-        List<Map<String, String>> recipeList = new ArrayList<>();
+        List<Step> stepList = new ArrayList<>();
 
         for (int index = 0; index < idSet.size(); index++) {
-            Map<String, String> ingredient = new HashMap<>();
 
             String idWithIdPrefix = idList.get(index);
             String shortDescriptionWithIdPrefix = shortDescriptionList.get(index);
@@ -261,16 +254,12 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
             String videoUrl = videoUrlWithIdPrefix.replace(prefix, "");
             String thumbnailUrl = thumbnailUrlWithIdPrefix.replace(prefix, "");
 
-            ingredient.put(AppConstants.STEP_ID_KEY, id);
-            ingredient.put(AppConstants.STEP_SHORT_DESCRIPTION_KEY, shortDescription);
-            ingredient.put(AppConstants.STEP_DESCRIPTION_KEY, description);
-            ingredient.put(AppConstants.STEP_VIDEO_URL_KEY, videoUrl);
-            ingredient.put(AppConstants.STEP_THUMBNAIL_URL_KEY, thumbnailUrl);
+            Step ingredient = new Step(id, shortDescription, description, videoUrl, thumbnailUrl);
 
-            recipeList.add(ingredient);
+            stepList.add(ingredient);
         }
 
-        return recipeList;
+        return stepList;
     }
 
     private static List<String> convertSetToList(Set<String> set) {

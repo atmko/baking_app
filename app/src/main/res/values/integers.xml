@@ -2,4 +2,7 @@
 <resources>
     <integer name="recipe_column_span">2</integer>
     <integer name="widget_refresh_rate">1800000</integer>
+
+    <!--ingredient_spinner dropdown / dialog-->
+    <integer name="spinner_mode">1</integer>
 </resources>

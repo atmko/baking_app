@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--fragment for recipe steps selector-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        style="@style/step_item_card_spacing">
-
-    <TextView
-        android:id="@+id/short_description_text_view"
-        android:layout_gravity="center"
-        style="@style/step_item_text"
-        android:text="@string/ingredients_text" />
-
-    </android.support.v7.widget.CardView>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/steps_recycler_view"
-        android:layout_width="match_parent" android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

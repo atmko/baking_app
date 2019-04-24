@@ -3,6 +3,7 @@ package com.upkipp.bakingapp;
 import android.support.test.InstrumentationRegistry;
 
 import com.upkipp.bakingapp.models.Recipe;
+import com.upkipp.bakingapp.models.Step;
 import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.RecipeParser;
 
@@ -123,7 +124,7 @@ class TestConstants {
         return testRecipeList.get(0);
     }
 
-    static List<Map<String, String>> getTestSteps() {
+    static List<Step> getTestSteps() {
         String[] step0 = InstrumentationRegistry.getTargetContext().getResources().getStringArray(R.array.steps_0);
         String[] step1 = InstrumentationRegistry.getTargetContext().getResources().getStringArray(R.array.steps_1);
         String[] step2 = InstrumentationRegistry.getTargetContext().getResources().getStringArray(R.array.steps_2);
@@ -137,15 +138,10 @@ class TestConstants {
         stepArrayList.add(step3); stepArrayList.add(step4); stepArrayList.add(step5);
         stepArrayList.add(step6);
 
-        List<Map<String,String>> stepsList = new ArrayList<>();
+        List<Step> stepsList = new ArrayList<>();
         for (String[] stepArray: stepArrayList) {
             for (String aStep0 : step0) {
-                Map<String, String> step = new HashMap<>();
-                step.put(AppConstants.STEP_ID_KEY, stepArray[0]);
-                step.put(AppConstants.STEP_SHORT_DESCRIPTION_KEY, stepArray[1]);
-                step.put(AppConstants.STEP_DESCRIPTION_KEY, stepArray[2]);
-                step.put(AppConstants.STEP_VIDEO_URL_KEY, stepArray[3]);
-                step.put(AppConstants.STEP_THUMBNAIL_URL_KEY, stepArray[4]);
+                Step step = new Step(stepArray[0], stepArray[1], stepArray[2], stepArray[3], stepArray[4]);
                 stepsList.add(step);
             }
         }
