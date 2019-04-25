@@ -62,7 +62,7 @@
 
         <service android:name=".widget.WidgetJobService" android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
-R
+
         <service android:name=".widget.IngredientSelectionService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 

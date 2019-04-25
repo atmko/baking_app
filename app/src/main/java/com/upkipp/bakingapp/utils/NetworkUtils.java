@@ -24,7 +24,7 @@ public class NetworkUtils {
     public static void loadImage(Context context, String urlString, ImageView imageView) {
         //configure glide behaviour
         RequestOptions requestOptions = new RequestOptions()
-                .placeholder(android.R.drawable.ic_menu_gallery)
+                .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.widget_icon);
 
         Glide.with(context)

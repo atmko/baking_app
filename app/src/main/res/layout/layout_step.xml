@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    style="@style/step_item_card_spacing"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card"
-    style="@style/step_item_card_spacing"
-    app:cardBackgroundColor="@color/color_wicked_orange">
+    android:background="@drawable/step_touch_selector">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/short_description_text_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="short description"
+        style="@style/step_item_text"/>
 
-        <TextView
-            android:id="@+id/short_description_text_view"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="short description"
-            style="@style/step_item_text"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-</android.support.v7.widget.CardView>
-
+</android.support.constraint.ConstraintLayout>

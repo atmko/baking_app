@@ -6,12 +6,12 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/standard_layout_margin"
-    app:cardBackgroundColor="@android:color/holo_orange_light">
+    android:layout_margin="@dimen/standard_layout_margin">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/recipe_adapter_touch_selector">
 
         <ImageView
             android:id="@+id/recipe_image_view"

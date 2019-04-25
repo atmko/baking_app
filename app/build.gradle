@@ -38,6 +38,9 @@ dependencies {
 
     implementation 'com.android.support:cardview-v7:28.0.0'
 
+    //for snack bar
+    implementation 'com.android.support:design:28.0.0'
+
     //fast android networking
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 

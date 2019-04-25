@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="color_wicked_orange">@android:color/holo_orange_light</color>
+    <color name="color_wicked_orange">#FFB74D</color>
+    <color name="color_orange_flat">#FFD180</color>
+    <color name="color_orange_pale">#FFE0B2</color>
+
     <color name="warm_grey">#e2ddd3</color>
     <color name="color_divider">#cccccc</color>
 </resources>
