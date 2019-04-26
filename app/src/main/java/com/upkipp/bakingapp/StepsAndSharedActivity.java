@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.upkipp.bakingapp.adapters.StepsAdapter;
 import com.upkipp.bakingapp.fragments.DescriptionFragment;
@@ -211,14 +212,16 @@ public class StepsAndSharedActivity extends AppCompatActivity
     }
 
     private void makeVideoFullScreen() {
-        FrameLayout frameLayout = findViewById(R.id.video_container);
+         FrameLayout frameLayout = findViewById(R.id.video_container);
         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
-        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
-        margins.setMargins(0,0,0,0);
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
 
-        frameLayout.setLayoutParams(margins);
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         frameLayout.setLayoutParams(params);
+
+        LinearLayout topLayout = findViewById(R.id.top_layout);
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
+        margins.setMargins(0,0,0,0);
+        topLayout.setLayoutParams(margins);
     }
 
     private void loadStepsFragment() {
@@ -351,12 +354,14 @@ public class StepsAndSharedActivity extends AppCompatActivity
     private void makeVideoRegularSize() {
         FrameLayout frameLayout = findViewById(R.id.video_container);
         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
-        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) frameLayout.getLayoutParams();
-        margins.setMargins(8,8,8,8);
-        params.height = Math.round(getResources().getDimension(R.dimen.fragment_container_height));
 
-        frameLayout.setLayoutParams(margins);
+        params.height = Math.round(getResources().getDimension(R.dimen.fragment_container_height));
         frameLayout.setLayoutParams(params);
+
+        LinearLayout topLayout = findViewById(R.id.top_layout);
+        ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) topLayout.getLayoutParams();
+        margins.setMargins(16, 16, 16, 16);
+        topLayout.setLayoutParams(margins);
     }
 
     @Override

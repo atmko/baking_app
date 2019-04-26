@@ -31,18 +31,15 @@
     <style name="container_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/fragment_container_height</item>
-        <item name="android:layout_margin">@dimen/standard_layout_margin</item>
     </style>
 
     <style name="divider_line_horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/divider_thickness</item>
-        <item name="android:layout_marginTop">@dimen/standard_layout_margin</item>
         <item name="android:layout_marginLeft">@dimen/divider__tip_margin</item>
         <item name="android:layout_marginStart">@dimen/divider__tip_margin</item>
         <item name="android:layout_marginRight">@dimen/divider__tip_margin</item>
         <item name="android:layout_marginEnd">@dimen/divider__tip_margin</item>
-        <item name="android:layout_marginBottom">@dimen/standard_layout_margin</item>
         <item name="android:background">@color/color_divider</item>
     </style>
 

@@ -3,8 +3,10 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_margin="@dimen/double_layout_margin"
     android:orientation="horizontal"
     android:baselineAligned="false">
 
@@ -22,7 +24,11 @@
 
     <FrameLayout
         android:id="@+id/divider_line"
-        style="@style/divider_line_vertical"/>
+        style="@style/divider_line_vertical"
+        android:layout_marginLeft="@dimen/double_layout_margin"
+        android:layout_marginStart="@dimen/double_layout_margin"
+        android:layout_marginRight="@dimen/double_layout_margin"
+        android:layout_marginEnd="@dimen/double_layout_margin"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/right_panel"

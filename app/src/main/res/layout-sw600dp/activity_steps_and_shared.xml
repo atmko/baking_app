@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/double_layout_margin"
     android:orientation="horizontal">
 
     <FrameLayout
         android:id="@+id/container_panel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/standard_layout_margin"
         android:layout_weight="1">
 
         <include layout="@layout/container_steps" />
@@ -17,12 +18,15 @@
 
     <FrameLayout
         android:id="@+id/master_detail_flow_divider"
+        android:layout_marginLeft="@dimen/double_layout_margin"
+        android:layout_marginStart="@dimen/double_layout_margin"
+        android:layout_marginRight="@dimen/double_layout_margin"
+        android:layout_marginEnd="@dimen/double_layout_margin"
         style="@style/divider_line_vertical"/>
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/standard_layout_margin"
         android:layout_weight="2"
         android:fillViewport="true">
 
@@ -32,6 +36,13 @@
             android:orientation="vertical">
 
             <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
+
+            <FrameLayout
+                style="@style/divider_line_horizontal"
+                android:layout_marginTop="@dimen/double_layout_margin"
+                android:layout_marginBottom="@dimen/double_layout_margin"/>
+
+            <include layout="@layout/container_description" />
 
             <include layout="@layout/container_description" />
 

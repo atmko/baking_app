@@ -2,9 +2,10 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/standard_layout_margin">
+    android:layout_margin="@dimen/double_layout_margin">
 
     <ScrollView
         android:id="@+id/details_scroll_view"
@@ -21,7 +22,9 @@
             <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
 
             <FrameLayout
-                style="@style/divider_line_horizontal"/>
+                style="@style/divider_line_horizontal"
+                android:layout_marginTop="@dimen/double_layout_margin"
+                android:layout_marginBottom="@dimen/double_layout_margin"/>
 
             <include layout="@layout/container_description" />
 
