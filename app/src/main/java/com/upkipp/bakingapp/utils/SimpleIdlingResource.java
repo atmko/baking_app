@@ -1,6 +1,7 @@
 package com.upkipp.bakingapp.utils;
 
 //code provided by udacity
+//used in testing processes that happen off UI thread
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
 

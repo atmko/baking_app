@@ -32,8 +32,20 @@ public class WidgetJobService extends JobIntentService {
     public static final String ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE = "com.upkipp.android.bakingapp.action.save_and_or_load_widget_recipe";
     public static final String ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE = "com.upkipp.android.bakingapp.action.handshake_save_and_or_load_widget_recipe";
 
+    public static final String SET_INGREDIENT_QUANTITY = "ingredients_quantity_set";
+    public static final String SET_INGREDIENT_MEASURE = "ingredients_measure_set";
+    public static final String SET_INGREDIENT_NAME = "ingredients_name_set";
+
+    public static final String SET_STEP_ID = "steps_id_set";
+    public static final String SET_STEP_SHORT_DESCRIPTION = "steps_shortDescription_set";
+    public static final String SET_STEP_DESCRIPTION = "steps_description_set";
+    public static final String SET_STEP_VIDEO_URL = "steps_videoURL_set";
+    public static final String SET_STEP_THUMBNAIL_URL = "steps_thumbnailURL_set";
+
     public static final String RECIPE_LIST_KEY = "recipes_list";
     public static final int JOBS_ID = 22;
+
+    private final String logStartWidgetAction = "starting service action: ";
 
     public static void queueWork(Context context, Intent intent, int id) {
         enqueueWork(context,
@@ -54,7 +66,7 @@ public class WidgetJobService extends JobIntentService {
 
                 serviceIntent.setAction(handshakeAction);
 
-                Log.d(TAG,"starting service action: " + handshakeAction);
+                Log.d(TAG, logStartWidgetAction + handshakeAction);
                 saveAndOrLoadWidgetRecipe(serviceIntent);
 
             } else if (action.equals(ACTION_GET_RECIPE_NAMES)) {
@@ -62,7 +74,7 @@ public class WidgetJobService extends JobIntentService {
 
                 serviceIntent.setAction(handshakeAction);
 
-                Log.d(TAG, "starting service action: " + handshakeAction);
+                Log.d(TAG, logStartWidgetAction + handshakeAction);
                 getRecipeNames(serviceIntent);
             }
         }
@@ -111,28 +123,28 @@ public class WidgetJobService extends JobIntentService {
 
                 .putString(AppConstants.RECIPE_NAME_KEY, name)
 
-                .putStringSet(RecipeWidgetProvider.SET_INGREDIENT_QUANTITY,
+                .putStringSet(SET_INGREDIENT_QUANTITY,
                         getFormattedSet(ingredients, AppConstants.INGREDIENT_QUANTITY_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_INGREDIENT_MEASURE,
+                .putStringSet(SET_INGREDIENT_MEASURE,
                         getFormattedSet(ingredients, AppConstants.INGREDIENT_MEASURE_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_INGREDIENT_NAME,
+                .putStringSet(SET_INGREDIENT_NAME,
                         getFormattedSet(ingredients, AppConstants.INGREDIENT_NAME_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_STEP_ID,
+                .putStringSet(SET_STEP_ID,
                         getFormattedSet(steps, AppConstants.STEP_ID_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_STEP_SHORT_DESCRIPTION,
+                .putStringSet(SET_STEP_SHORT_DESCRIPTION,
                         getFormattedSet(steps, AppConstants.STEP_SHORT_DESCRIPTION_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_STEP_DESCRIPTION,
+                .putStringSet(SET_STEP_DESCRIPTION,
                         getFormattedSet(steps, AppConstants.STEP_DESCRIPTION_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_STEP_VIDEO_URL,
+                .putStringSet(SET_STEP_VIDEO_URL,
                         getFormattedSet(steps, AppConstants.STEP_VIDEO_URL_KEY))
 
-                .putStringSet(RecipeWidgetProvider.SET_STEP_THUMBNAIL_URL,
+                .putStringSet(SET_STEP_THUMBNAIL_URL,
                         getFormattedSet(steps, AppConstants.STEP_THUMBNAIL_URL_KEY))
 
                 .putString(AppConstants.SERVINGS_KEY, servings)
@@ -142,12 +154,13 @@ public class WidgetJobService extends JobIntentService {
                 .apply();
     }
 
-    //format list into set format for storage un shared preferences
+    //format list into set format for storage in shared preferences
     private Set<String> getFormattedSet(List<Map<String, String>> list, String key) {
 
         Set<String> set = new HashSet<>();
 
         for (int index = 0; index < list.size(); index++) {
+            //String.valueOf(index) makes each item unique
             String prefix =  String.valueOf(index) + AppConstants.WIDGET_PREF_DELINEATION;;
 
             Map<String, String> currentItem = list.get(index);
@@ -159,7 +172,7 @@ public class WidgetJobService extends JobIntentService {
         return set;
     }
 
-    // get saved recipe and update widgets to start broadcast receiver
+    //get saved recipe and update widgets to start broadcast receiver
     private void loadRecipe() {
         Recipe recipe = IngredientSelectionRemoteViewsFactory.getSavedRecipe(getApplicationContext());
 

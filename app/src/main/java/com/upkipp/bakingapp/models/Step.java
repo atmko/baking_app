@@ -4,6 +4,7 @@ import org.parceler.Parcel;
 
 import java.util.Map;
 
+//step object class
 @Parcel
 public class Step {
     String mId;

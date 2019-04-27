@@ -33,11 +33,13 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.upkipp.bakingapp.R;
 
+//fragment class for video player
 public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventListener {
     private static String MEDIA_SESSION_TAG = "MEDIA_SESSION";
 
     private static String VIDEO_URL_KEY = "video_url_key";
     private static String PLAYBACK_POSITION_KEY = "playback_position";
+    private final String errorOnClickListenerImplementation = " must implement OnClickListener";
 
     View mRootView;
     private Context mContext;
@@ -55,11 +57,12 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        //check that onclickListener is implemented
         try {
             mFullScreenClickListener = (View.OnClickListener)context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement OnClickListener");
+                    + errorOnClickListenerImplementation);
         }
     }
 
@@ -166,21 +169,18 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         DataSource.Factory dataSourceFactory =
                 new DefaultDataSourceFactory(mContext, mContext.getString(R.string.app_name));
 
-        //temporary bug fix: fragment is called twice,
-        //mVideoUrl is sometimes null even after checking for null in activity
-        if (mVideoUrl != null) {
-            Uri uri = Uri.parse(mVideoUrl);
-            ExtractorMediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory,
-                    new DefaultExtractorsFactory(), null, null);
+        Uri uri = Uri.parse(mVideoUrl);
+        ExtractorMediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory,
+                new DefaultExtractorsFactory(), null, null);
 
-            mVideoPlayerView.setPlayer(mVideoPlayer);
-            mVideoPlayer.prepare(mediaSource);
-            mVideoPlayer.seekTo(mPlaybackPosition);
-            mVideoPlayer.setPlayWhenReady(true);
-        }
+        mVideoPlayerView.setPlayer(mVideoPlayer);
+        mVideoPlayer.prepare(mediaSource);
+        mVideoPlayer.seekTo(mPlaybackPosition);
+        mVideoPlayer.setPlayWhenReady(true);
 
     }
 
+    //media session callback class
     private class MediaCallbacks extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
@@ -208,7 +208,6 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         mVideoPlayer.setPlayWhenReady(false);
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -225,6 +224,7 @@ public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventList
         }
     }
 
+    //exoplayer event listener methods
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest) {
 

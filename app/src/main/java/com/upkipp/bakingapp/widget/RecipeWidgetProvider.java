@@ -26,23 +26,14 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public static final int STATE_INGREDIENTS = 1;
     public static final int STATE_RECIPE = 2;
 
-    public static final String SET_INGREDIENT_QUANTITY = "ingredients_quantity_set";
-    public static final String SET_INGREDIENT_MEASURE = "ingredients_measure_set";
-    public static final String SET_INGREDIENT_NAME = "ingredients_name_set";
-
-    public static final String SET_STEP_ID = "steps_id_set";
-    public static final String SET_STEP_SHORT_DESCRIPTION = "steps_shortDescription_set";
-    public static final String SET_STEP_DESCRIPTION = "steps_description_set";
-    public static final String SET_STEP_VIDEO_URL = "steps_videoURL_set";
-    public static final String SET_STEP_THUMBNAIL_URL = "steps_thumbnailURL_set";
-
     public static final String WIDGET_PREFERENCE_PREFIX = "widget_preferences";
+
+    private static final String logCompleteWidgetAction = "widget update complete";
 
     //loop through and update widgets
     static void updateAppWidgetIngredients(Context context, Recipe recipe) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager
-                .getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
+        int[] appWidgetIds = getAppWidgetIds(context, appWidgetManager);
 
         // Construct the RemoteViews object
         RemoteViews remoteViews = getIngredientListRemoteView(context, recipe);
@@ -52,14 +43,13 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
 
-        Log.d(TAG,"widget update complete");
+        Log.d(TAG, logCompleteWidgetAction);
     }
 
     //loop through and update widgets
     static void updateAppWidgetRecipes(Context context) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager
-                .getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
+        int[] appWidgetIds = getAppWidgetIds(context, appWidgetManager);
 
         // Construct the RemoteViews object
         RemoteViews remoteViews = getRecipeListRemoteView(context);
@@ -69,7 +59,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
 
-        Log.d(TAG,"widget update complete");
+        Log.d(TAG, logCompleteWidgetAction);
     }
 
     //get remote view for ingredient state
@@ -145,9 +135,10 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-         Intent ingredientsServiceIntent = new Intent(context, JobServiceReceiver.class);
-         ingredientsServiceIntent.setAction(WidgetJobService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
-         context.sendBroadcast(ingredientsServiceIntent);
+        //load saved recipe ingredients if available
+        Intent ingredientsServiceIntent = new Intent(context, JobServiceReceiver.class);
+        ingredientsServiceIntent.setAction(WidgetJobService.ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
+        context.sendBroadcast(ingredientsServiceIntent);
     }
 
     @Override
@@ -158,6 +149,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    public static int[] getAppWidgetIds(Context context, AppWidgetManager appWidgetManager) {
+        return appWidgetManager
+                .getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
     }
 
 }

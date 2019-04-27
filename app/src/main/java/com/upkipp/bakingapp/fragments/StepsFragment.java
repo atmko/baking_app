@@ -20,9 +20,10 @@ import com.upkipp.bakingapp.utils.AppConstants;
 import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.Map;
 
+//fragment class for steps
 public class StepsFragment extends Fragment{
+    private final String errorOnClickListenerImplementation = " must implement OnStepItemClickListener";
     Context mContext;
     StepsAdapter mStepsAdapter;
     RecyclerView mStepsRecyclerView;
@@ -31,7 +32,6 @@ public class StepsFragment extends Fragment{
     private List<Step> mStepsList;
 
     public StepsFragment() {
-
     }
 
     //check that OnStepItemClickListener is implemented
@@ -40,7 +40,7 @@ public class StepsFragment extends Fragment{
         super.onAttach(context);
         if (!(context instanceof StepsAdapter.OnStepItemClickListener)) {
             throw new ClassCastException(context.toString()
-                    + " must implement OnStepItemClickListener");
+                    + errorOnClickListenerImplementation);
 
         }
     }
@@ -63,6 +63,14 @@ public class StepsFragment extends Fragment{
         return rootView;
     }
 
+    public void setIngredientsList(List<Ingredient> ingredientsList) {
+        this.mIngredientsList = ingredientsList;
+    }
+
+    public void setStepsList(List<Step> stepsList) {
+        this.mStepsList = stepsList;
+    }
+
     private void defineViews(View rootView) {
         mStepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
         //configureLayoutManager returns a LayoutManager
@@ -70,31 +78,22 @@ public class StepsFragment extends Fragment{
 
         mStepsAdapter = new StepsAdapter(mContext);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
-
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
         mStepsList = Parcels.unwrap(savedInstanceState.getParcelable(AppConstants.STEPS_KEY));
         mIngredientsList = Parcels.unwrap(savedInstanceState.getParcelable(AppConstants.INGREDIENTS_KEY));
-
     }
 
     private void setAdapterData() {
         mStepsAdapter.setStepList(mStepsList, mIngredientsList);
     }
 
+    //configures recycler view layout
     private LinearLayoutManager configureLayoutManager() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         return layoutManager;
-    }
-
-    public void setIngredientsList(List<Ingredient> ingredientsList) {
-        this.mIngredientsList = ingredientsList;
-    }
-
-    public void setStepsList(List<Step> stepsList) {
-        this.mStepsList = stepsList;
     }
 
     @Override

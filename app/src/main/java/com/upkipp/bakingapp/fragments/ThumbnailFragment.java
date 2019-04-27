@@ -14,13 +14,13 @@ import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.NetworkUtils;
 
+//fragment class for thumbnail
 public class ThumbnailFragment extends Fragment {
     private Context mContext;
     private ImageView mThumbnailImageView;
     private String mThumbnailUrl;
 
     public ThumbnailFragment() {
-
     }
 
     @Nullable
@@ -45,10 +45,6 @@ public class ThumbnailFragment extends Fragment {
         this.mThumbnailUrl = thumbnailUrl;
     }
 
-    public void reloadMedia() {
-        setViewValues();
-    }
-
     private void defineViews(View rootView) {
         mThumbnailImageView = rootView.findViewById(R.id.thumbnail_image_view);
     }
@@ -64,6 +60,10 @@ public class ThumbnailFragment extends Fragment {
                 mContext,
                 mThumbnailUrl,
                 mThumbnailImageView);
+    }
+
+    public void reloadMedia() {
+        setViewValues();
     }
 
     @Override

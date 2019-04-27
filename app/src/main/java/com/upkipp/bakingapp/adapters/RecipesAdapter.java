@@ -15,6 +15,7 @@ import com.upkipp.bakingapp.utils.NetworkUtils;
 
 import java.util.List;
 
+// adapter for recipe recycler view
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
     private OnRecipeItemClickListener mOnRecipeItemClickListener;
     private List<Recipe> mRecipeList;
@@ -42,6 +43,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             itemView.setOnClickListener(this);
         }
 
+        //override onclick to implement item click listener
         @Override
         public void onClick(View v) {
             mOnRecipeItemClickListener.onItemClick(getAdapterPosition());
@@ -71,6 +73,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 currentRecipe.getImage(),
                 recipeViewHolder.recipeImageView);
 
+        //set recipe name in text view
         recipeViewHolder.nameTextView.setText(currentRecipe.getName());
 
     }

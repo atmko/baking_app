@@ -15,16 +15,18 @@ import com.upkipp.bakingapp.utils.AppConstants;
 import java.util.List;
 import java.util.Map;
 
+// adapter for ingredient spinner
 public class IngredientsAdapter implements SpinnerAdapter {
 
     private Context mContext;
     private List<Ingredient> mIngredientList;
 
-    public IngredientsAdapter(List<Ingredient> ingredientList, Context context) {
+    IngredientsAdapter(List<Ingredient> ingredientList, Context context) {
         mContext = context;
         mIngredientList = ingredientList;
     }
 
+    //configures how the each view item looks
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup viewGroup) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -84,6 +86,7 @@ public class IngredientsAdapter implements SpinnerAdapter {
         return false;
     }
 
+    //configures how the selected view item looks
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -96,6 +99,7 @@ public class IngredientsAdapter implements SpinnerAdapter {
         TextView quantityTextView = view.findViewById(R.id.quantity_text_view);
         TextView measureTextView = view.findViewById(R.id.measure_text_view);
 
+        //hide all text views except the the "Ingredients" heading
         ingredientHeadingTextView.setVisibility(View.VISIBLE);
         ingredientNameTextView.setVisibility(View.GONE);
         quantityTextView.setVisibility(View.GONE);

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.utils.AppConstants;
 
+//fragment class that shows recipe's description
 public class DescriptionFragment extends Fragment{
     private Context mContext;
     private TextView mDescriptionTextView;
@@ -21,7 +22,6 @@ public class DescriptionFragment extends Fragment{
     private String mIngredients;
 
     public DescriptionFragment() {
-
     }
 
     @Nullable
@@ -50,22 +50,20 @@ public class DescriptionFragment extends Fragment{
         this.mIngredients = ingredients;
     }
 
-    public void reloadMedia() {
-        setViewValues();
-
-    }
-
     private void defineViews(View rootView) {
         mDescriptionTextView = rootView.findViewById(R.id.description_text_view);
     }
 
     private void restoreSavedValues(Bundle savedInstanceState) {
         mDescription = savedInstanceState.getString(AppConstants.STEP_DESCRIPTION_KEY);
-
     }
 
     private void setViewValues() {
         mDescriptionTextView.setText(mDescription);
+    }
+
+    public void reloadMedia() {
+        setViewValues();
     }
 
     @Override

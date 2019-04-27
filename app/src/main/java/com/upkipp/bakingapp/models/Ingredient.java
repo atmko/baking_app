@@ -2,6 +2,7 @@ package com.upkipp.bakingapp.models;
 
 import org.parceler.Parcel;
 
+//ingredient object class
 @Parcel
 public class Ingredient {
     String mQuantity;

@@ -29,21 +29,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//remote view factory
+//remote views service for widget
 public class IngredientSelectionService extends RemoteViewsService {
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new IngredientSelectionRemoteViewsFactory(this.getApplicationContext());
     }
 }
 
+//remote view factory for widget
 class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
         implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
+    //field for knowing whether to load ingredients or load recipes
     private int mState;
 
+    //list of data that gets displayed in list view
     private String[] mDisplayList;
+
     private List<Recipe> mRecipeList;
     private Recipe mRecipe;
 
@@ -63,7 +68,6 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
     private void registerBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WidgetJobService.ACTION_HANDSHAKE_GET_RECIPE_NAMES);
-//        intentFilter.addAction(WidgetService.ACTION_GET_INGREDIENTS);
         intentFilter.addAction(WidgetJobService.ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(IngredientSelectionRemoteViewsFactory.this,
                 intentFilter);
@@ -76,8 +80,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds
-                (new ComponentName(mContext, RecipeWidgetProvider.class));
+        int[] appWidgetIds = RecipeWidgetProvider.getAppWidgetIds(context, appWidgetManager);
 
         String action = intent.getAction();
 
@@ -123,6 +126,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
         return recipeNameList;
     }
 
+    //gets recipe saved in shared preferences
     public static Recipe getSavedRecipe(Context context) {
         SharedPreferences sharedPreferences = context
                 .getSharedPreferences(RecipeWidgetProvider.WIDGET_PREFERENCE_PREFIX, Context.MODE_PRIVATE);
@@ -139,13 +143,13 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
     private static List<Ingredient> getRecipeIngredients(SharedPreferences sharedPreferences) {
         Set<String> quantitySet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_INGREDIENT_QUANTITY, new HashSet<String>());
+                (WidgetJobService.SET_INGREDIENT_QUANTITY, new HashSet<String>());
 
         Set<String> measureSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_INGREDIENT_MEASURE, new HashSet<String>());
+                (WidgetJobService.SET_INGREDIENT_MEASURE, new HashSet<String>());
 
         Set<String> nameSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_INGREDIENT_NAME, new HashSet<String>());
+                (WidgetJobService.SET_INGREDIENT_NAME, new HashSet<String>());
 
         List<String> quantityList = convertSetToList(quantitySet);
         List<String> measureList = convertSetToList(measureSet);
@@ -194,19 +198,19 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
     private static List<Step> getRecipeSteps(SharedPreferences sharedPreferences) {
         Set<String> idSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_STEP_ID, new HashSet<String>());
+                (WidgetJobService.SET_STEP_ID, new HashSet<String>());
 
         Set<String> shortDescriptionSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_STEP_SHORT_DESCRIPTION, new HashSet<String>());
+                (WidgetJobService.SET_STEP_SHORT_DESCRIPTION, new HashSet<String>());
 
         Set<String> descriptionSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_STEP_DESCRIPTION, new HashSet<String>());
+                (WidgetJobService.SET_STEP_DESCRIPTION, new HashSet<String>());
 
         Set<String> videoUrlSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_STEP_VIDEO_URL, new HashSet<String>());
+                (WidgetJobService.SET_STEP_VIDEO_URL, new HashSet<String>());
 
         Set<String> thumbnailUrlSet = sharedPreferences.getStringSet
-                (RecipeWidgetProvider.SET_STEP_THUMBNAIL_URL, new HashSet<String>());
+                (WidgetJobService.SET_STEP_THUMBNAIL_URL, new HashSet<String>());
 
         List<String> idList = convertSetToList(idSet);
         List<String> shortDescriptionList = convertSetToList(shortDescriptionSet);
@@ -286,7 +290,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
         return compareValues;
     }
 
-    //unregister broadcast receiver
+    //unregister local broadcast receiver
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(mContext).unregisterReceiver(IngredientSelectionRemoteViewsFactory.this);

@@ -8,12 +8,9 @@ import android.util.Log;
 public class JobServiceReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        int id = 0;
+        int id = WidgetJobService.JOBS_ID;
 
-        id = WidgetJobService.JOBS_ID;
-
-        if (id != 0) {
-            WidgetJobService.queueWork(context, intent, id);
-        }
+        //queue and stare service
+        WidgetJobService.queueWork(context, intent, id);
     }
 }

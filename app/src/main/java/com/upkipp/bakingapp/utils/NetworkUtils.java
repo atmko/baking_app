@@ -13,8 +13,10 @@ import com.upkipp.bakingapp.models.Recipe;
 
 import java.util.List;
 
+//class that contains internet calls
 public class NetworkUtils {
 
+    //gets and returns recipes request
     public static ANRequest getAllRecipes() {
         return AndroidNetworking.get(AppConstants.RECIPES_URL_STRING).build();
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// adapter for step recycler view
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
     private OnStepItemClickListener mOnStepItemClickListener;
     private List<Step> mStepList;
@@ -69,6 +70,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
         int resourceId;
 
+        //if this is the first (ingredients) item
         if (viewType == INGREDIENTS_LAYOUT_ID) {
             resourceId = R.layout.layout_ingredient_spinner;
 
@@ -94,6 +96,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
             mViewType = viewType;
 
+            //if this is the first (ingredients) item
             if (viewType == INGREDIENTS_LAYOUT_ID) {
                 mIngredientSpinner = itemView.findViewById(R.id.ingredient_spinner);
 
@@ -103,6 +106,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
             }
         }
 
+        //override onclick to implement item click listener
         @Override
         public void onClick(View v) {
             mOnStepItemClickListener.onStepClick(getAdapterPosition());
@@ -112,23 +116,27 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     @Override
     public void onBindViewHolder(@NonNull StepViewHolder stepViewHolder, int position) {
         if (stepViewHolder.mViewType == INGREDIENTS_LAYOUT_ID) {
-            IngredientsAdapter ingredientSpinnerAdapter =
-                    new IngredientsAdapter(mIngredientList, stepViewHolder.itemView.getContext());
-
-            stepViewHolder.mIngredientSpinner.setAdapter(ingredientSpinnerAdapter);
+            configureIngredientsLayout(stepViewHolder);
 
         } else if (stepViewHolder.mViewType == STEPS_LAYOUT_ID) {
-            Step currentStep = mStepList.get(position);
-            String id = currentStep.getId();
-            String shortDescription = currentStep.getShortDescription();
-
-            String newShortDescription = id + ". " + shortDescription;
-
-            stepViewHolder.mShortDescriptionTextView.setText(newShortDescription);
+            configureStepLayout(stepViewHolder, position);
         }
     }
 
-    public List<Step> getStepList() {
-        return mStepList;
+    private void configureIngredientsLayout(StepViewHolder stepViewHolder) {
+        IngredientsAdapter ingredientSpinnerAdapter =
+                new IngredientsAdapter(mIngredientList, stepViewHolder.itemView.getContext());
+
+        stepViewHolder.mIngredientSpinner.setAdapter(ingredientSpinnerAdapter);
+    }
+
+    private void configureStepLayout(StepViewHolder stepViewHolder, int position){
+        Step currentStep = mStepList.get(position);
+        String id = currentStep.getId();
+        String shortDescription = currentStep.getShortDescription();
+
+        String newShortDescription = id + ". " + shortDescription;
+
+        stepViewHolder.mShortDescriptionTextView.setText(newShortDescription);
     }
 }
