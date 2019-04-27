@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.fragments;
 
 import android.content.Context;
@@ -23,10 +27,12 @@ import java.util.List;
 
 //fragment class for steps
 public class StepsFragment extends Fragment{
+    @SuppressWarnings("FieldCanBeLocal")
     private final String errorOnClickListenerImplementation = " must implement OnStepItemClickListener";
-    Context mContext;
-    StepsAdapter mStepsAdapter;
-    RecyclerView mStepsRecyclerView;
+    private Context mContext;
+    private StepsAdapter mStepsAdapter;
+    @SuppressWarnings("FieldCanBeLocal")
+    private RecyclerView mStepsRecyclerView;
 
     private List<Ingredient> mIngredientsList;
     private List<Step> mStepsList;
@@ -52,6 +58,7 @@ public class StepsFragment extends Fragment{
         mContext = rootView.getContext();
         defineViews(rootView);
 
+        //noinspection StatementWithEmptyBody
         if (savedInstanceState == null) {
 
         } else {

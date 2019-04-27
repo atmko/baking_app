@@ -1,17 +1,19 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.models;
 
 import org.parceler.Parcel;
 
-import java.util.Map;
-
 //step object class
 @Parcel
 public class Step {
-    String mId;
-    String mShortDescription;
-    String mDescription;
-    String mVideoURL;
-    String mThumbnailURL;
+    private String mId;
+    private String mShortDescription;
+    private String mDescription;
+    private String mVideoURL;
+    private String mThumbnailURL;
 
     Step() {
     }

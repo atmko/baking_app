@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.adapters;
 
 import android.content.Context;
@@ -12,11 +16,8 @@ import android.widget.TextView;
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.models.Ingredient;
 import com.upkipp.bakingapp.models.Step;
-import com.upkipp.bakingapp.utils.AppConstants;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 // adapter for step recycler view
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHolder> {
@@ -26,7 +27,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
 
     //layout ids
     private final int INGREDIENTS_LAYOUT_ID = 1;
-    @SuppressWarnings("FieldCanBeLocal")
     private final int STEPS_LAYOUT_ID = 2;
 
     public StepsAdapter(Context context) {

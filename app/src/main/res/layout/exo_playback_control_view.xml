@@ -14,7 +14,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:layoutDirection="ltr"
     android:background="#CC000000"
     android:orientation="vertical">
 
@@ -26,17 +25,24 @@
         android:orientation="horizontal">
 
         <ImageButton android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
+            style="@style/ExoMediaButton.Previous"
+            android:contentDescription="@string/description_skip_to_start"/>
 
         <ImageButton android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"/>
+            style="@style/ExoMediaButton.Play"
+            android:contentDescription="@string/description_play_button"/>
+
 
         <ImageButton android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
+            style="@style/ExoMediaButton.Pause"
+            android:contentDescription="@string/description_pause_button"/>
+
 
         <ImageButton android:id="@+id/exo_fullscreen"
             style="@style/ExoMediaButton.FastForward"
-            android:src="@drawable/widget_icon"/>
+            android:src="@drawable/widget_icon"
+            android:contentDescription="@string/description_fullscreen_button"/>
+
 
     </LinearLayout>
 

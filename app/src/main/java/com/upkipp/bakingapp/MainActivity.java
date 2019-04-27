@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
@@ -25,10 +29,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements RecipesAdapter.OnRecipeItemClickListener {
 
-    RecyclerView mRecipesRecyclerView;
-    RecipesAdapter mRecipesAdapter;
+    @SuppressWarnings("FieldCanBeLocal")
+    private RecyclerView mRecipesRecyclerView;
+    private RecipesAdapter mRecipesAdapter;
 
-    List<Recipe> mRecipeList;
+    private List<Recipe> mRecipeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +132,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Nullable
-    SimpleIdlingResource mSimpleIdlingResource;
+    private SimpleIdlingResource mSimpleIdlingResource;
 
     public SimpleIdlingResource getIdlingResource() {
         if (mSimpleIdlingResource == null) {

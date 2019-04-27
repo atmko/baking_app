@@ -1,6 +1,9 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +18,11 @@ import com.upkipp.bakingapp.utils.AppConstants;
 
 //fragment class that shows recipe's description
 public class DescriptionFragment extends Fragment{
-    private Context mContext;
+    @SuppressWarnings({"unused"})
     private TextView mDescriptionTextView;
 
     private String mDescription;
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private String mIngredients;
 
     public DescriptionFragment() {
@@ -28,9 +32,9 @@ public class DescriptionFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_description, container, false);
-        mContext = rootView.getContext();
         defineViews(rootView);
 
+        //noinspection StatementWithEmptyBody
         if (savedInstanceState == null) {
 
         } else {

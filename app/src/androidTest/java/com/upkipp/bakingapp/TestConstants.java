@@ -1,16 +1,17 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp;
 
 import android.support.test.InstrumentationRegistry;
 
 import com.upkipp.bakingapp.models.Recipe;
 import com.upkipp.bakingapp.models.Step;
-import com.upkipp.bakingapp.utils.AppConstants;
 import com.upkipp.bakingapp.utils.RecipeParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class TestConstants {
     private static final String TEST_RECIPE_STRING = "[\n" +

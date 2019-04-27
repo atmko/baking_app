@@ -1,8 +1,11 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -84,6 +87,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
         String action = intent.getAction();
 
+        //noinspection ConstantConditions
         if (action.equals(WidgetJobService.ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
             //update relevant set values
             mState = RecipeWidgetProvider.STATE_INGREDIENTS;
@@ -132,7 +136,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
                 .getSharedPreferences(RecipeWidgetProvider.WIDGET_PREFERENCE_PREFIX, Context.MODE_PRIVATE);
 
         String id = sharedPreferences.getString(AppConstants.RECIPE_ID_KEY, "");
-        String name = sharedPreferences.getString(AppConstants.RECIPE_NAME_KEY, "");;
+        String name = sharedPreferences.getString(AppConstants.RECIPE_NAME_KEY, "");
         List<Ingredient> ingredients = getRecipeIngredients(sharedPreferences);
         List<Step> steps = getRecipeSteps(sharedPreferences);
         String servings = sharedPreferences.getString(AppConstants.SERVINGS_KEY, "");
@@ -160,6 +164,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
             public int compare(String o1, String o2) {
                 int[] compareValues = getCompareValues(o1, o2);
 
+                //noinspection UseCompareMethod
                 if (compareValues[0] > compareValues[1]) {
 
                     return 1;
@@ -177,13 +182,14 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
         List<Ingredient> ingredientList = new ArrayList<>();
 
+        //noinspection ConstantConditions
         for (int index = 0; index < quantitySet.size(); index++) {
 
             String quantityWithIdPrefix = quantityList.get(index);
             String measureWithIdPrefix = measureList.get(index);
             String nameWithIdPrefix = nameList.get(index);
 
-            String prefix = String.valueOf(index) + AppConstants.WIDGET_PREF_DELINEATION;
+            String prefix = index + AppConstants.WIDGET_PREF_DELINEATION;
 
             String quantity = quantityWithIdPrefix.replace(prefix, "");
             String measure = measureWithIdPrefix.replace(prefix, "");
@@ -223,6 +229,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
             public int compare(String o1, String o2) {
                 int[] compareValues = getCompareValues(o1, o2);
 
+                //noinspection UseCompareMethod
                 if (compareValues[0] > compareValues[1]) {
 
                     return 1;
@@ -242,6 +249,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
 
         List<Step> stepList = new ArrayList<>();
 
+        //noinspection ConstantConditions
         for (int index = 0; index < idSet.size(); index++) {
 
             String idWithIdPrefix = idList.get(index);
@@ -250,7 +258,7 @@ class IngredientSelectionRemoteViewsFactory extends  BroadcastReceiver
             String videoUrlWithIdPrefix = videoUrlList.get(index);
             String thumbnailUrlWithIdPrefix = thumbnailUrlList.get(index);
 
-            String prefix = String.valueOf(index) + AppConstants.WIDGET_PREF_DELINEATION;
+            String prefix = index + AppConstants.WIDGET_PREF_DELINEATION;
 
             String id = idWithIdPrefix.replace(prefix, "");
             String shortDescription = shortDescriptionWithIdPrefix.replace(prefix, "");

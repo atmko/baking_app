@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
@@ -24,7 +28,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     public static final String STEPS_KEY = "steps";
     public static final String STEP_POSITION_KEY = "step_position";
-    public static final String ORIENTATION_STATE_LIST_KEY = "orientation_request";
+    private static final String ORIENTATION_STATE_LIST_KEY = "orientation_request";
 
     public static final String DESCRIPTION_FRAGMENT_TAG = "description_fragment";
     public static final String VIDEO_FRAGMENT_TAG = "video_fragment";
@@ -175,6 +179,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             showView(R.id.video_container);
 
             //if previous orientation was not landscape(portrait) && orientation is now landscape
+            //noinspection PointlessBooleanExpression
             if (mOrientationStateList[0] == false && mIsPhoneLandscape) {
                 hideUiForFullscreen();
                 makeVideoFullScreen();
@@ -205,6 +210,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
         decorView.setSystemUiVisibility(uiOptions);
 
+        //noinspection ConstantConditions
         getSupportActionBar().hide();
 
         //hide layout views
@@ -267,6 +273,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         if (hasDescription) {
             showView(R.id.description_container);
             DescriptionFragment descriptionFragment = (DescriptionFragment) fragmentManager.findFragmentByTag(DESCRIPTION_FRAGMENT_TAG);
+
+            assert descriptionFragment != null;
             descriptionFragment.setDescription(description);
             descriptionFragment.reloadMedia();
         }
@@ -274,15 +282,20 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         if (hasThumbnail) {
             showView(R.id.thumbnail_container);
             ThumbnailFragment thumbnailFragment = (ThumbnailFragment) fragmentManager.findFragmentByTag(THUMBNAIL_FRAGMENT_TAG);
+
+            assert thumbnailFragment != null;
             thumbnailFragment.setThumbnailUrl(thumbnailUrl);
             thumbnailFragment.reloadMedia();
         }
 
         if (hasVideo) {
             showView(R.id.video_container);
+
+            assert videoPlayerFragment != null;
             videoPlayerFragment.setVideoUrl(videoUrl);
             videoPlayerFragment.reloadMedia();
         } else {
+            assert videoPlayerFragment != null;
             videoPlayerFragment.stopVideoPlayer();
         }
 
@@ -299,12 +312,14 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             //make landscape via sensor. (videos locked to sensor landscape when button clicked)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        } else if (mIsPhoneLandscape && !isFullScreen) {
+        } else //noinspection ConstantConditions
+            if (mIsPhoneLandscape && !isFullScreen) {
             hideUiForFullscreen();
             makeVideoFullScreen();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        } else if (mIsPhoneLandscape && isFullScreen) {
+        } else //noinspection ConstantConditions
+                if (mIsPhoneLandscape && isFullScreen) {
             showUiForRegularScreen();
             makeVideoRegularSize();
             //make landscape via sensor. (videos locked to sensor landscape when button clicked)
@@ -319,6 +334,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
         decorView.setSystemUiVisibility(uiOptions);
 
+        //noinspection ConstantConditions
         getSupportActionBar().show();
 
         //show layout views

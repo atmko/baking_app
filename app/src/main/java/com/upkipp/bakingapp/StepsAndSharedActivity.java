@@ -1,17 +1,18 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -35,17 +36,17 @@ public class StepsAndSharedActivity extends AppCompatActivity
         implements StepsAdapter.OnStepItemClickListener, View.OnClickListener {
 
     public static final String SELECTED_RECIPE_KEY = "recipe";
-    public static final String FULLSCREEN_REQUEST_KEY = "fullscreen_request";
+    private static final String FULLSCREEN_REQUEST_KEY = "fullscreen_request";
 
     private Recipe mSelectedRecipe;
     private boolean mIsTwoPane;
 
     private int mStepPosition;
 
-    boolean mIsTabletLandscape;
+    private boolean mIsTabletLandscape;
 
     //checks if video should be fullscreen after configuration changes(rotations) and other scenarios
-    boolean mFullScreenRequest;
+    private boolean mFullScreenRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +202,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
 
         decorView.setSystemUiVisibility(uiOptions);
 
+        //noinspection ConstantConditions
         getSupportActionBar().hide();
 
         //hide layout views
@@ -277,6 +279,8 @@ public class StepsAndSharedActivity extends AppCompatActivity
         if (hasDescription) {
             showView(R.id.description_container);
             DescriptionFragment descriptionFragment = (DescriptionFragment) fragmentManager.findFragmentByTag(DESCRIPTION_FRAGMENT_TAG);
+
+            assert descriptionFragment != null;
             descriptionFragment.setDescription(description);
             descriptionFragment.reloadMedia();
         }
@@ -284,15 +288,20 @@ public class StepsAndSharedActivity extends AppCompatActivity
         if (hasThumbnail) {
             showView(R.id.thumbnail_container);
             ThumbnailFragment thumbnailFragment = (ThumbnailFragment) fragmentManager.findFragmentByTag(THUMBNAIL_FRAGMENT_TAG);
+
+            assert thumbnailFragment != null;
             thumbnailFragment.setThumbnailUrl(thumbnailUrl);
             thumbnailFragment.reloadMedia();
         }
 
         if (hasVideo) {
             showView(R.id.video_container);
+
+            assert videoPlayerFragment != null;
             videoPlayerFragment.setVideoUrl(videoUrl);
             videoPlayerFragment.reloadMedia();
         } else {
+            assert videoPlayerFragment != null;
             videoPlayerFragment.stopVideoPlayer();
         }
 
@@ -320,13 +329,15 @@ public class StepsAndSharedActivity extends AppCompatActivity
             mFullScreenRequest = true;
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        } else if (mIsTabletLandscape && !isFullScreen) {
+        } else //noinspection ConstantConditions
+            if (mIsTabletLandscape && !isFullScreen) {
             hideUiForFullscreen();
             makeVideoFullScreen();
             //ensure video will automatically become fullscreen when setRequestedOrientation executed
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        } else if (mIsTabletLandscape && isFullScreen) {
+        } else //noinspection ConstantConditions
+                if (mIsTabletLandscape && isFullScreen) {
             //remove fullscreen request
             mFullScreenRequest = false;
             showUiForRegularScreen();
@@ -343,6 +354,7 @@ public class StepsAndSharedActivity extends AppCompatActivity
         int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
         decorView.setSystemUiVisibility(uiOptions);
 
+        //noinspection ConstantConditions
         getSupportActionBar().show();
 
         //show layout views

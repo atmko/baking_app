@@ -3,6 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/top_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -11,14 +12,12 @@
     android:baselineAligned="false">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
+        <include layout="@layout/containers_placeholder_video_and_thumbnail" />
 
     </LinearLayout>
 
@@ -28,14 +27,16 @@
         android:layout_marginLeft="@dimen/double_layout_margin"
         android:layout_marginStart="@dimen/double_layout_margin"
         android:layout_marginRight="@dimen/double_layout_margin"
-        android:layout_marginEnd="@dimen/double_layout_margin"/>
+        android:layout_marginEnd="@dimen/double_layout_margin"
+        tools:ignore="InconsistentLayout" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/right_panel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        tools:ignore="InconsistentLayout">
 
         <ScrollView
             android:id="@+id/details_scroll_view"

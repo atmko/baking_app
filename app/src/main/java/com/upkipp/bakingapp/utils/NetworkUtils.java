@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.utils;
 
 import android.content.Context;
@@ -9,9 +13,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.upkipp.bakingapp.R;
-import com.upkipp.bakingapp.models.Recipe;
-
-import java.util.List;
 
 //class that contains internet calls
 public class NetworkUtils {

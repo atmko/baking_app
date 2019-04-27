@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.utils;
 
 import com.google.gson.Gson;
@@ -28,6 +32,7 @@ public class RecipeParser {
             List ingredientMapList = (List)currentRecipeData.get(AppConstants.INGREDIENTS_KEY);
 
             //loop through ingredient map and add to ingredient list
+            //noinspection ConstantConditions
             for (int ingredientIndex = 0;
                  ingredientIndex < ingredientMapList.size();
                  ingredientIndex++) {
@@ -47,6 +52,7 @@ public class RecipeParser {
             List stepMapList = (List)currentRecipeData.get(AppConstants.STEPS_KEY);
 
             //loop through step map and add to step list
+            //noinspection ConstantConditions
             for (int stepIndex = 0; stepIndex < stepMapList.size() ; stepIndex++) {
                 //get current step data
                 Map currentStepMap = (Map) stepMapList.get(stepIndex);

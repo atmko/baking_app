@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/fragment_container_height"
             android:background="@android:color/white"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/description_recipe_image"/>
 
         <TextView
             android:id="@+id/name_text_view"

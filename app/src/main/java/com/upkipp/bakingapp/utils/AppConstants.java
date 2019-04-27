@@ -1,9 +1,13 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.utils;
 
 //app/api common values
 public class AppConstants {
 
-    public static final String RECIPES_URL_STRING = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    static final String RECIPES_URL_STRING = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
 
     //recipe parse keys
     public static final String RECIPE_ID_KEY = "id";

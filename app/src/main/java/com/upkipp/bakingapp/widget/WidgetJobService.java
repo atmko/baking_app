@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.widget;
 
 import android.content.Context;
@@ -45,6 +49,7 @@ public class WidgetJobService extends JobIntentService {
     public static final String RECIPE_LIST_KEY = "recipes_list";
     public static final int JOBS_ID = 22;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final String logStartWidgetAction = "starting service action: ";
 
     public static void queueWork(Context context, Intent intent, int id) {
@@ -61,6 +66,7 @@ public class WidgetJobService extends JobIntentService {
             //action to take as a result of received action
             String handshakeAction;
 
+            //noinspection ConstantConditions
             if (action.equals(ACTION_SAVE_AND_OR_LOAD_WIDGET_RECIPE)) {
                 handshakeAction = ACTION_HANDSHAKE_SAVE_AND_OR_LOAD_WIDGET_RECIPE;
 
@@ -80,7 +86,7 @@ public class WidgetJobService extends JobIntentService {
         }
     }
 
-    public void saveAndOrLoadWidgetRecipe(Intent serviceIntent) {
+    private void saveAndOrLoadWidgetRecipe(Intent serviceIntent) {
         //check if this is first run (recipe sent through intent extra)
         boolean hasRecipeExtra = serviceIntent.hasExtra(StepsAndSharedActivity.SELECTED_RECIPE_KEY);
 
@@ -96,9 +102,11 @@ public class WidgetJobService extends JobIntentService {
     private void saveAndLoadRecipe(Intent serviceIntent) {
         Bundle extras = serviceIntent.getExtras();
 
+        //noinspection ConstantConditions
         Recipe recipe = Parcels.unwrap
                 (extras.getParcelable(StepsAndSharedActivity.SELECTED_RECIPE_KEY));
 
+        //noinspection ConstantConditions
         saveRecipePreference(recipe);
 
         //send broadcast to update and load ingredients and recipe
@@ -161,7 +169,7 @@ public class WidgetJobService extends JobIntentService {
 
         for (int index = 0; index < list.size(); index++) {
             //String.valueOf(index) makes each item unique
-            String prefix =  String.valueOf(index) + AppConstants.WIDGET_PREF_DELINEATION;;
+            String prefix = index + AppConstants.WIDGET_PREF_DELINEATION;
 
             Map<String, String> currentItem = list.get(index);
             String value = currentItem.get(key) ;

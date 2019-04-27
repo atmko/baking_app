@@ -1,12 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--common strings-->
     <string name="app_name">Baking App</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 
-    <string name="widget_select_recipe">select a recipe</string>
-    <string name="empty_list_text">empty</string>
-    <string name="recipe_literal">Recipes</string>
+    <!--widget strings-->
+    <string name="widget_select_recipe" translatable="true">select a recipe</string>
+    <string name="empty_list_text" translatable="true">empty</string>
+    <string name="recipe_literal" translatable="true" tools:ignore="UnusedResources">Recipes</string>
 
     <!--view strings-->
     <string name="ingredients_text" translatable="true">Ingredients</string>
@@ -17,6 +16,14 @@
     <string name="content_description_step_demonstration_image" translatable="true">demonstration image</string>
     <string name="content_description_placeholder_image" translatable="true">placeholder image</string>
 
-    <!--ingredient_spinner dropdown / dialog-->
-    <string name="spinner_mode">dropdown</string>
+    <string name="description_skip_to_start" translatable="true" tools:ignore="UnusedResources">skip to start button</string>
+    <string name="description_play_button" translatable="true" tools:ignore="UnusedResources">play button</string>
+    <string name="description_pause_button"  translatable="true" tools:ignore="UnusedResources">pause button</string>
+    <string name="description_fullscreen_button" translatable="true" tools:ignore="UnusedResources">full screen button</string>
+
+    <string name="description_recipe_image" translatable="true">recipe image</string>
+    <string name="description_settings_button" translatable="true">settings button</string>
+
+    <string name="description_open_app_button" translatable="true">open app button</string>
+
 </resources>

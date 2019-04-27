@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.models;
 
 import org.parceler.Parcel;
@@ -5,9 +9,9 @@ import org.parceler.Parcel;
 //ingredient object class
 @Parcel
 public class Ingredient {
-    String mQuantity;
-    String mMeasure;
-    String mName;
+    private String mQuantity;
+    private String mMeasure;
+    private String mName;
 
     Ingredient() {
     }

@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/top_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/double_layout_margin"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:ignore="InconsistentLayout"
+    android:baselineAligned="false">
 
     <FrameLayout
         android:id="@+id/container_panel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        tools:ignore="InconsistentLayout">
 
         <include layout="@layout/container_steps" />
 
@@ -22,7 +26,8 @@
         android:layout_marginStart="@dimen/double_layout_margin"
         android:layout_marginRight="@dimen/double_layout_margin"
         android:layout_marginEnd="@dimen/double_layout_margin"
-        style="@style/divider_line_vertical"/>
+        style="@style/divider_line_vertical"
+        tools:ignore="InconsistentLayout" />
 
     <ScrollView
         android:layout_width="0dp"
@@ -35,7 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
+            <include layout="@layout/containers_placeholder_video_and_thumbnail" />
 
             <FrameLayout
                 style="@style/divider_line_horizontal"

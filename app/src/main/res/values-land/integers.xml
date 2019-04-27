@@ -3,5 +3,5 @@
     <integer name="recipe_column_span">3</integer>
 
     <!--ingredient_spinner dropdown / dialog-->
-    <string name="spinner_mode">1</string>
+    <integer name="spinner_mode">0</integer>
 </resources>

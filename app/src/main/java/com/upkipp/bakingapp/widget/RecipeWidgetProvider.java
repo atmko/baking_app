@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.widget;
 
 import android.app.PendingIntent;
@@ -104,7 +108,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.openRecipeButton, activityPendingIntent);
 
         //set empty view
-        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.emptytext);
+        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.empty_text);
 
         return remoteViews;
     }
@@ -128,7 +132,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
                 (R.id.widget_ingredient_names_list_view, broadcastPendingIntent);
 
         //set empty view
-        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.emptytext);
+        remoteViews.setEmptyView(R.id.widget_ingredient_names_list_view, R.id.empty_text);
 
         return remoteViews;
     }

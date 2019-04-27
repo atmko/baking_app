@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.models;
 
 import com.upkipp.bakingapp.utils.AppConstants;
@@ -10,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 //recipe object class
+@SuppressWarnings("unused")
 @Parcel
 public class Recipe {
     String mId;

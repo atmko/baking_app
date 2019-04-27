@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.fragments;
 
 import android.content.Context;
@@ -35,13 +39,15 @@ import com.upkipp.bakingapp.R;
 
 //fragment class for video player
 public class VideoPlayerFragment extends Fragment implements ExoPlayer.EventListener {
+    @SuppressWarnings("FieldCanBeLocal")
     private static String MEDIA_SESSION_TAG = "MEDIA_SESSION";
 
     private static String VIDEO_URL_KEY = "video_url_key";
     private static String PLAYBACK_POSITION_KEY = "playback_position";
+    @SuppressWarnings("FieldCanBeLocal")
     private final String errorOnClickListenerImplementation = " must implement OnClickListener";
 
-    View mRootView;
+    private View mRootView;
     private Context mContext;
     private SimpleExoPlayerView mVideoPlayerView;
     private String mVideoUrl;

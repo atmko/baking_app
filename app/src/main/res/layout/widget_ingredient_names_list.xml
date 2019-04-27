@@ -19,7 +19,7 @@
             android:layout_marginLeft="@dimen/double_layout_margin"
             android:layout_marginStart="@dimen/double_layout_margin"
             android:layout_gravity="center_vertical"
-            android:textSize="20dp"
+            android:textSize="20sp"
             tools:text="List Heading"
             android:textColor="@android:color/white" />
 
@@ -33,7 +33,8 @@
             android:layout_marginEnd="@dimen/double_layout_margin"
             android:layout_marginBottom="@dimen/standard_layout_margin"
             android:src="@drawable/settings_cog"
-            tools:text="select recipe"/>
+            tools:text="select recipe"
+            android:contentDescription="@string/description_settings_button"/>
 
     </LinearLayout>
 
@@ -44,7 +45,7 @@
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/emptytext"
+        android:id="@+id/empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/standard_layout_margin"
@@ -64,7 +65,8 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:src="@drawable/widget_icon"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="@string/description_open_app_button"/>
     </LinearLayout>
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/description_container"
-    style="@style/container_style"
-    tools:background="@color/colorPrimary"
-    tools:showIn="@layout/activity_details"/>
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/description_container"
+style="@style/container_style"
+tools:background="@color/design_default_color_primary_dark"
+tools:showIn="@layout/activity_details"/>

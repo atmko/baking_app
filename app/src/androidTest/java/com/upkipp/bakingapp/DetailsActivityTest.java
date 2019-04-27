@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp;
 
 import android.app.Activity;
@@ -15,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.upkipp.bakingapp.models.Step;
-import com.upkipp.bakingapp.utils.AppConstants;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -24,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.Map;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

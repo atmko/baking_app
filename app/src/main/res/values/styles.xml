@@ -8,11 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="details_fragment_margins">
-        <item name="android:layout_margin">32dp</item>
-
-    </style>
-
     <style name="step_item_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

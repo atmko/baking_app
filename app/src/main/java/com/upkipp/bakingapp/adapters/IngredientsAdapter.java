@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.adapters;
 
 import android.content.Context;
@@ -10,13 +14,11 @@ import android.widget.TextView;
 
 import com.upkipp.bakingapp.R;
 import com.upkipp.bakingapp.models.Ingredient;
-import com.upkipp.bakingapp.utils.AppConstants;
 
 import java.util.List;
-import java.util.Map;
 
 // adapter for ingredient spinner
-public class IngredientsAdapter implements SpinnerAdapter {
+class IngredientsAdapter implements SpinnerAdapter {
 
     private Context mContext;
     private List<Ingredient> mIngredientList;

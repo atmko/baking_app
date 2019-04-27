@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/containers_palaceholder_video_and_thumbnail" />
+            <include layout="@layout/containers_placeholder_video_and_thumbnail" />
 
             <FrameLayout
                 style="@style/divider_line_horizontal"

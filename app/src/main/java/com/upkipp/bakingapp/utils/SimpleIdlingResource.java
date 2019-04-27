@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.utils;
 
 //code provided by udacity
@@ -36,6 +40,7 @@ public class SimpleIdlingResource implements IdlingResource {
     public void setIdleState(boolean isIdleNow) {
         mIsIdleNow.set(isIdleNow);
         if (isIdleNow && mCallback != null) {
+            //noinspection ConstantConditions
             mCallback.onTransitionToIdle();
         }
     }

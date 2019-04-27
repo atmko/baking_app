@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Aayat Mimiko
+ */
+
 package com.upkipp.bakingapp.fragments;
 
 import android.content.Context;
@@ -30,6 +34,7 @@ public class ThumbnailFragment extends Fragment {
         mContext = rootView.getContext();
         defineViews(rootView);
 
+        //noinspection StatementWithEmptyBody
         if (savedInstanceState == null) {
 
         } else {
