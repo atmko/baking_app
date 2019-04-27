@@ -68,6 +68,8 @@ public class StepsAndSharedActivityTest {
         assertTrue(InstrumentationRegistry.getTargetContext().getResources().getBoolean(R.bool.isTabletLandscape));
     }
 
+    //Ensure screen auto rotate is on to pass test
+    //Ensure device in landscape to pass test
     @Test
     public void isTabletLandscape_Video_Fullscreen_Button_Click() {
         startActivityWithRecipe();
