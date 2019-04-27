@@ -6,7 +6,7 @@
     <ImageView
         android:id="@+id/placeholder_container"
         style="@style/container_style"
-        android:src="@drawable/widget_icon"
+        android:src="@drawable/app_icon"
         android:contentDescription="@string/content_description_placeholder_image"
         tools:background="@color/colorAccent"/>
 

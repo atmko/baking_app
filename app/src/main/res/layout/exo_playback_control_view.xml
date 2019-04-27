@@ -40,7 +40,7 @@
 
         <ImageButton android:id="@+id/exo_fullscreen"
             style="@style/ExoMediaButton.FastForward"
-            android:src="@drawable/widget_icon"
+            android:src="@drawable/app_icon"
             android:contentDescription="@string/description_fullscreen_button"/>
 
 

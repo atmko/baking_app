@@ -28,7 +28,7 @@ public class NetworkUtils {
         //configure glide behaviour
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.drawable.loading_placeholder)
-                .error(R.drawable.widget_icon);
+                .error(R.drawable.app_icon);
 
         Glide.with(context)
                 .load(urlString)
