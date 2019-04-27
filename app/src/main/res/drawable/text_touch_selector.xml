@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--sourced from Konstantin Burov-->
+<!--https://stackoverflow.com/questions/4692642/android-customized-button-changing-text-color-->
+
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true" android:state_focused="false"
