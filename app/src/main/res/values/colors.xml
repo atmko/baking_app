@@ -6,6 +6,8 @@
     <color name="color_orange_flat">#FFD180</color>
     <color name="color_orange_pale">#FFE0B2</color>
 
+    <color name="backup_text_color">#000000</color>
+
     <color name="warm_grey">#e2ddd3</color>
     <color name="color_divider">#cccccc</color>
 </resources>
