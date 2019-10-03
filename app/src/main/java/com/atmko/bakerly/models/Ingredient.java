@@ -9,9 +9,9 @@ import org.parceler.Parcel;
 //ingredient object class
 @Parcel
 public class Ingredient {
-    private String mQuantity;
-    private String mMeasure;
-    private String mName;
+    String mQuantity;
+    String mMeasure;
+    String mName;
 
     Ingredient() {
     }

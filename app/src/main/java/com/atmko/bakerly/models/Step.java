@@ -9,11 +9,11 @@ import org.parceler.Parcel;
 //step object class
 @Parcel
 public class Step {
-    private String mId;
-    private String mShortDescription;
-    private String mDescription;
-    private String mVideoURL;
-    private String mThumbnailURL;
+    String mId;
+    String mShortDescription;
+    String mDescription;
+    String mVideoURL;
+    String mThumbnailURL;
 
     Step() {
     }
