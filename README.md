@@ -9,3 +9,11 @@
 * Easy to use UI
 * Step by step instructions
 * Ingredient list home screen widget
+
+#### Libraries
+* Android Espresso
+* ExoPlayer
+* Glide
+* GSON
+* Parceler
+* Fast Android Networking
